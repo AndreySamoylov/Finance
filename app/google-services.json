@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1052425471476",
+    "firebase_url": "https://finance-7b443-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "finance-7b443",
+    "storage_bucket": "finance-7b443.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1052425471476:android:15ac6ec6f6830aaa02e5a1",
+        "android_client_info": {
+          "package_name": "com.goodlucky.finance"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1052425471476-u8j3klg1qcls0kojkmfmuvnfb1igouqn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.goodlucky.finance",
+            "certificate_hash": "30fcffefb86e0654d77108feb87c5b6b36d3e797"
+          }
+        },
+        {
+          "client_id": "1052425471476-8mkb6qplgqf4liubh8qdc4dcrufp5lvv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2BYfTShoDvYf7MyT4sZ5YkIRzRzM8tZA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1052425471476-8mkb6qplgqf4liubh8qdc4dcrufp5lvv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,93 @@
+<resources>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+
+    <!--Существительные-->
+    <string name="app_name">Finance</string>
+    <string name="income">Поступления</string>
+    <string name="cost">Расходы</string>
+    <string name="costRadioButton">Расход</string>
+    <string name="incomeRadioButton">Поступление</string>
+    <string name="category">Категория</string>
+    <string name="categories">Категории</string>
+    <string name="accounts">Счета</string>
+    <string name="date">Дата</string>
+    <string name="other">Остальное</string>
+    <string name="sum">Сумма</string>
+    <string name="account">Счёт</string>
+    <string name="today">Сегодня</string>
+    <string name="yesterday">Вчера</string>
+    <string name="dayBeforeYesterday">Позавчера</string>
+    <string name="initialDate">Начальная дата</string>
+    <string name="finalDate">Конечная дата</string>
+    <string name="hexCode">HEX код</string>
+    <string name="nameCategory">Название категории</string>
+    <string name="allOperations">Все операции</string>
+    <string name="scanner">Сканер</string>
+    <string name="email">Почта</string>
+    <string name="password">Пароль</string>
+
+    <!--Глаголы-->
+    <string name="plus">+</string>
+    <string name="ok">ОК</string>
+    <string name="cancel">Отмена</string>
+    <string name="canceled">Отменено</string>
+    <string name="back">Назад</string>
+    <string name="open">Открыть</string>
+    <string name="close">Закрыть</string>
+    <string name="add">Добавить</string>
+    <string name="change">Изменить</string>
+    <string name="remove">Удалить</string>
+    <string name="read">Читать</string>
+    <string name="inputName">Введите название</string>
+    <string name="inputСolor">Выбрать цвет</string>
+    <string name="inputDate">Введите дату</string>
+    <string name="inputSum">Введите сумму</string>
+    <string name="inputComment">Введите комментарий</string>
+    <string name="chooseImage">Выберите изображение</string>
+    <string name="chooseCategory">Выберите категорию</string>
+    <string name="chooseAccount">Выберите счёт</string>
+    <string name="changeDate">Изменить дату</string>
+    <string name="scanned">Отсканировано</string>
+    <string name="youDoNotEnterAccount">Вы не вошли в аккаунт</string>
+    <string name="youEnterAs">Вы вошли как:</string>
+    <string name="signUp">Зарегистрироваться</string>
+    <string name="signIn">Войти</string>
+    <string name="signOut">Выйти</string>
+
+    <!-- Всплывающие сообщения -->
+    <string name="recordHaveAdded">Запись была добавлена</string>
+    <string name="categoryHaveAdded">Категория была добавлена</string>
+    <string name="accountHaveAdded">Счёт был добавлен</string>
+    <string name="recordHaveChanged">Запись была изменена</string>
+    <string name="categoryHaveChanged">Категория была изменена</string>
+    <string name="accountHaveChanged">Счёт был изменен</string>
+    <string name="recordHaveDeleted">Запись была удалена</string>
+    <string name="categoryHaveDeleted">Категория была удалена</string>
+    <string name="accountHaveDeleted">Счёт был удалён</string>
+    <string name="dataSuccesfulSave">Данные успешно сохранены</string>
+    <string name="dataFailedSave">Ошибка сохранения данных</string>
+    <string name="dataSuccesfulLoad">Данные успешно загруженны</string>
+    <string name="dataFailedLoad">Ошибка загрузки данных</string>
+    <string name="youHaveNotAuth">Вы не авторизировались</string>
+
+    <!-- Диалоговые окна -->
+    <string name="doYouWantSaveDataToServer">Вы уверенны, что хотите сохранить данные?</string>
+    <string name="doYouWantLoadDataFromServer">Вы уверенны, что хотите загрузить данные?</string>
+
+    <!-- Заголовки для элементов меню-->
+    <string name="enterAccount">Войти в аккаунт</string>
+    <string name="saveDataToServer">Сохранить данные на сервер</string>
+    <string name="loadDataFromServer">Загрузить данные c сервера</string>
+    <string name="readFromCvsFile">Чтение из CVS файла</string>
+    <string name="settings">Настройки</string>
+    <string name="exit">Выйти</string>
+    <!-- Для настроек-->
+    <string name="basic">Базовые</string>
+
+    <string name="language">Язык</string>
+    <string name="languageDialogTitle">Выберите язык</string>
+    <string name="theme">Тема</string>
+    <string name="light">Светлая</string>
+    <string name="night">Тёмная</string>
+</resources>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="fragment_titles">
+        <item>Расходы</item>
+        <item>Доходы</item>
+        <item>Категории</item>
+        <item>Счета</item>
+    </string-array>
+
+    <string-array name="entries_languages">
+        <item>Default</item>
+        <item>Русский</item>
+        <item>English</item>
+    </string-array>
+
+    <string-array name="entries_values_languages">
+        <item>default</item>
+        <item>ru</item>
+        <item>en</item>
+    </string-array>
+</resources>
