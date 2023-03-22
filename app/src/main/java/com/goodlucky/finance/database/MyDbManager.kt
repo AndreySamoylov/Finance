@@ -19,9 +19,100 @@ class MyDbManager(private val context: Context) {
         myDbHealper.close()
     }
 
+    fun insertToReceipt(receipt: MyReceipt){
+        val contentValues = ContentValues()
+        contentValues.put(MyDatabaseConstants.CODE_RECEIPT, receipt.code)
+        sqLiteDatabase!!.insert(MyDatabaseConstants.TABLE_RECEIPTS, null, contentValues)
+    }
+
+    fun insertToReceiptWithID(receipt: MyReceipt){
+        val contentValues = ContentValues()
+        contentValues.put(MyDatabaseConstants.ID_RECEIPT, receipt._id)
+        contentValues.put(MyDatabaseConstants.CODE_RECEIPT, receipt.code)
+        sqLiteDatabase!!.insert(MyDatabaseConstants.TABLE_RECEIPTS, null, contentValues)
+    }
+
+    fun updateInReceipts(receipt: MyReceipt) {
+        val values = ContentValues().apply {
+            put(MyDatabaseConstants.CODE_RECEIPT, receipt.code)
+        }
+        val selection = "${MyDatabaseConstants.ID_RECEIPT} = ?"
+        val selectionArgs = arrayOf(receipt._id.toString())
+        sqLiteDatabase?.update(MyDatabaseConstants.TABLE_RECEIPTS, values, selection, selectionArgs)
+    }
+
+    fun deleteFromReceipts(_id: Long) {
+        sqLiteDatabase!!.execSQL(
+            ("DELETE FROM " + MyDatabaseConstants.TABLE_COSTS +
+                    " WHERE " + MyDatabaseConstants.ID_RECEIPT + "=" + _id + ";")
+        )
+    }
+
+    fun fromReceipts() : List<MyReceipt>{
+        val tempList: MutableList<MyReceipt> = ArrayList()
+        val cursor = sqLiteDatabase!!.query(
+            MyDatabaseConstants.TABLE_RECEIPTS,null,null,null,null,null,null)
+        while (cursor.moveToNext()) {
+            @SuppressLint("Range") val id = cursor.getLong(cursor.getColumnIndex(MyDatabaseConstants.ID_RECEIPT))
+            @SuppressLint("Range") val code = cursor.getString(cursor.getColumnIndex(MyDatabaseConstants.CODE_RECEIPT))
+            val receipt = MyReceipt(id, code)
+            tempList.add(receipt)
+        }
+        cursor.close()
+        return tempList
+    }
+
+    fun insertToBanksWithId(bank: MyBank){
+        val contentValues = ContentValues()
+        contentValues.put(MyDatabaseConstants.ID_BANK, bank._id)
+        contentValues.put(MyDatabaseConstants.NAME_BANK, bank.name)
+        sqLiteDatabase!!.insert(MyDatabaseConstants.TABLE_BANKS, null, contentValues)
+    }
+
+    fun fromBanks() : List<MyBank>{
+        val tempList: MutableList<MyBank> = ArrayList()
+        val cursor = sqLiteDatabase!!.query(
+            MyDatabaseConstants.TABLE_BANKS,null,null,null,null,null,null)
+        while (cursor.moveToNext()) {
+            @SuppressLint("Range") val id = cursor.getLong(cursor.getColumnIndex(MyDatabaseConstants.ID_BANK))
+            @SuppressLint("Range") val name = cursor.getString(cursor.getColumnIndex(MyDatabaseConstants.NAME_BANK))
+            val bank = MyBank(id, name)
+            tempList.add(bank)
+        }
+        cursor.close()
+        return tempList
+    }
+
+    fun insertToCurrenciesWithId(currency: MyCurrency){
+        val contentValues = ContentValues()
+        contentValues.put(MyDatabaseConstants.ID_RECEIPT, currency._id)
+        contentValues.put(MyDatabaseConstants.NAME_CURRENCY, currency.name_full)
+        contentValues.put(MyDatabaseConstants.NAME_SHORT_CURRENCY, currency.name_short)
+        contentValues.put(MyDatabaseConstants.EXCHANGE_RATE_CURRENCY, currency.exchange_rate)
+        sqLiteDatabase!!.insert(MyDatabaseConstants.TABLE_CURRENCIES, null, contentValues)
+    }
+
+    fun fromCurrencies() : List<MyCurrency>{
+        val tempList: MutableList<MyCurrency> = ArrayList()
+        val cursor = sqLiteDatabase!!.query(
+            MyDatabaseConstants.TABLE_CURRENCIES,null,null,null,null,null,null)
+        while (cursor.moveToNext()) {
+            @SuppressLint("Range") val id = cursor.getLong(cursor.getColumnIndex(MyDatabaseConstants.ID_CURRENCY))
+            @SuppressLint("Range") val nameFull = cursor.getString(cursor.getColumnIndex(MyDatabaseConstants.NAME_CURRENCY))
+            @SuppressLint("Range") val nameShort = cursor.getString(cursor.getColumnIndex(MyDatabaseConstants.NAME_SHORT_CURRENCY))
+            @SuppressLint("Range") val exchangeRate = cursor.getDouble(cursor.getColumnIndex(MyDatabaseConstants.EXCHANGE_RATE_CURRENCY))
+            val currency = MyCurrency(id, nameFull, nameShort, exchangeRate)
+            tempList.add(currency)
+        }
+        cursor.close()
+        return tempList
+    }
+
     fun insertToAccounts(account: MyAccount) {
         val contentValues = ContentValues()
         contentValues.put(MyDatabaseConstants.NAME_ACCOUNT, account.name)
+        contentValues.put(MyDatabaseConstants.ID_BANK_ACCOUNT, account.idBank)
+        contentValues.put(MyDatabaseConstants.ID_CURRENCY_ACCOUNT, account.idCurrency)
         sqLiteDatabase!!.insert(MyDatabaseConstants.TABLE_ACCOUNTS, null, contentValues)
     }
 
@@ -29,15 +120,20 @@ class MyDbManager(private val context: Context) {
         val contentValues = ContentValues()
         contentValues.put(MyDatabaseConstants.ID_ACCOUNT, account._id)
         contentValues.put(MyDatabaseConstants.NAME_ACCOUNT, account.name)
+        contentValues.put(MyDatabaseConstants.ID_BANK_ACCOUNT, account.idBank)
+        contentValues.put(MyDatabaseConstants.ID_CURRENCY_ACCOUNT, account.idCurrency)
         sqLiteDatabase!!.insert(MyDatabaseConstants.TABLE_ACCOUNTS, null, contentValues)
     }
 
     fun updateInAccounts(account: MyAccount) {
-        sqLiteDatabase!!.execSQL(
-            "UPDATE " + MyDatabaseConstants.TABLE_ACCOUNTS +
-                    " SET " + MyDatabaseConstants.NAME_ACCOUNT + "='" + account.name + "'" +
-                    " WHERE " + MyDatabaseConstants.ID_ACCOUNT + "=" + account._id + ";"
-        )
+        val values = ContentValues().apply {
+            put(MyDatabaseConstants.NAME_ACCOUNT, account.name)
+            put(MyDatabaseConstants.ID_BANK_ACCOUNT, account.idBank)
+            put(MyDatabaseConstants.ID_CURRENCY_ACCOUNT, account.idCurrency)
+        }
+        val selection = "${MyDatabaseConstants.ID_ACCOUNT} = ?"
+        val selectionArgs = arrayOf(account._id.toString())
+        sqLiteDatabase?.update(MyDatabaseConstants.TABLE_ACCOUNTS, values, selection, selectionArgs)
     }
 
     fun deleteFromAccounts(_id: Long) {
@@ -59,7 +155,11 @@ class MyDbManager(private val context: Context) {
                     cursor.getLong(cursor.getColumnIndex(MyDatabaseConstants.ID_ACCOUNT))
                 @SuppressLint("Range") val name =
                     cursor.getString(cursor.getColumnIndex(MyDatabaseConstants.NAME_ACCOUNT))
-                val account = MyAccount(id, name)
+                @SuppressLint("Range") val idBank =
+                    cursor.getLong(cursor.getColumnIndex(MyDatabaseConstants.ID_BANK_ACCOUNT))
+                @SuppressLint("Range") val idCurrency =
+                    cursor.getLong(cursor.getColumnIndex(MyDatabaseConstants.ID_CURRENCY_ACCOUNT))
+                val account = MyAccount(id, name, idBank, idCurrency)
                 tempList.add(account)
             }
             cursor.close()
@@ -395,6 +495,75 @@ class MyDbManager(private val context: Context) {
         return tempList
     }
 
+    //Метод возвращает сумму расходов за всё время
+    fun getSumCost()  : Double{
+        var allSum : Double = 0.0
+
+        val cursor = sqLiteDatabase!!.query(
+            MyDatabaseConstants.TABLE_COSTS, null, null, null,null, null, null
+        )
+        while (cursor.moveToNext()) {
+            @SuppressLint("Range") val sum =
+                cursor.getDouble(cursor.getColumnIndex(MyDatabaseConstants.SUM_COST))
+            allSum += sum
+        }
+        cursor.close()
+        return allSum
+    }
+
+    //Метод возвращает сумму расходов по выбранному счёту
+    fun getSumCostByAccount(idAccount : Long) : Double{
+        var allSum : Double = 0.0
+
+        val selection = "${MyDatabaseConstants.ID_ACCOUNT_COST} = ?"
+        val selectionArgs = arrayOf(idAccount.toString())
+
+        val cursor = sqLiteDatabase!!.query(
+            MyDatabaseConstants.TABLE_COSTS, null, selection, selectionArgs,
+            null, null, null
+        )
+        while (cursor.moveToNext()) {
+            @SuppressLint("Range") val sum = cursor.getDouble(cursor.getColumnIndex(MyDatabaseConstants.SUM_COST))
+            allSum += sum
+        }
+        cursor.close()
+        return allSum
+    }
+
+    fun getSumCostByAccount(initialDate : String, finalDate : String) : Double{
+        var allSum : Double = 0.0
+
+        val selection = "${MyDatabaseConstants.DATE_COST} >= ? AND ${MyDatabaseConstants.DATE_COST} <= ?"
+        val selectionArgs = arrayOf(initialDate, finalDate)
+
+        val cursor = sqLiteDatabase!!.query(
+            MyDatabaseConstants.TABLE_COSTS, null, selection, selectionArgs,null, null, null
+        )
+        while (cursor.moveToNext()) {
+            @SuppressLint("Range") val sum = cursor.getDouble(cursor.getColumnIndex(MyDatabaseConstants.SUM_COST))
+            allSum += sum
+        }
+        cursor.close()
+        return allSum
+    }
+
+    fun getSumCostByAccount(idAccount : Long, initialDate : String, finalDate : String) : Double{
+        var allSum : Double = 0.0
+
+        val selection = "${MyDatabaseConstants.ID_ACCOUNT_COST} = ? AND ${MyDatabaseConstants.DATE_COST} >= ? AND ${MyDatabaseConstants.DATE_COST} <= ?"
+        val selectionArgs = arrayOf(idAccount.toString(), initialDate, finalDate)
+
+        val cursor = sqLiteDatabase!!.query(
+            MyDatabaseConstants.TABLE_COSTS, null, selection, selectionArgs,null, null, null
+        )
+        while (cursor.moveToNext()) {
+            @SuppressLint("Range") val sum = cursor.getDouble(cursor.getColumnIndex(MyDatabaseConstants.SUM_COST))
+            allSum += sum
+        }
+        cursor.close()
+        return allSum
+    }
+
     // Метод позвращает сумму покупок по определенной категории,
     // где category - идентификатор категория, по которой нужно делать выборку
     fun getSumCostByCategory(categoryID: Long) : Double{
@@ -723,6 +892,73 @@ class MyDbManager(private val context: Context) {
         return tempList
     }
 
+    //Метод возвращает сумму доходов за всё время
+    fun getSumIncome()  : Double{
+        var allSum : Double = 0.0
+
+        val cursor = sqLiteDatabase!!.query(
+            MyDatabaseConstants.TABLE_INCOME, null, null, null,null, null, null
+        )
+        while (cursor.moveToNext()) {
+            @SuppressLint("Range") val sum =  cursor.getDouble(cursor.getColumnIndex(MyDatabaseConstants.SUM_INCOME))
+            allSum += sum
+        }
+        cursor.close()
+        return allSum
+    }
+
+    //Метод возвращает сумму доходов по выбранному счёту
+    fun getSumIncomeByAccount(idAccount : Long) : Double{
+        var allSum : Double = 0.0
+
+        val selection = "${MyDatabaseConstants.ID_ACCOUNT_INCOME} = ?"
+        val selectionArgs = arrayOf(idAccount.toString())
+
+        val cursor = sqLiteDatabase!!.query(
+            MyDatabaseConstants.TABLE_INCOME, null, selection, selectionArgs,null, null, null
+        )
+        while (cursor.moveToNext()) {
+            @SuppressLint("Range") val sum = cursor.getDouble(cursor.getColumnIndex(MyDatabaseConstants.SUM_INCOME))
+            allSum += sum
+        }
+        cursor.close()
+        return allSum
+    }
+
+    fun getSumIncomeByAccount(initialDate : String, finalDate : String) : Double{
+        var allSum : Double = 0.0
+
+        val selection = "${MyDatabaseConstants.DATE_INCOME} >= ? AND ${MyDatabaseConstants.DATE_INCOME} <= ?"
+        val selectionArgs = arrayOf(initialDate, finalDate)
+
+        val cursor = sqLiteDatabase!!.query(
+            MyDatabaseConstants.TABLE_INCOME, null, selection, selectionArgs,null, null, null
+        )
+        while (cursor.moveToNext()) {
+            @SuppressLint("Range") val sum = cursor.getDouble(cursor.getColumnIndex(MyDatabaseConstants.SUM_INCOME))
+            allSum += sum
+        }
+        cursor.close()
+        return allSum
+    }
+
+    fun getSumIncomeByAccount(idAccount : Long, initialDate : String, finalDate : String) : Double{
+        var allSum : Double = 0.0
+
+        val selection = "${MyDatabaseConstants.ID_ACCOUNT_INCOME} = ? AND ${MyDatabaseConstants.DATE_INCOME} >= ? AND ${MyDatabaseConstants.DATE_INCOME} <= ?"
+        val selectionArgs = arrayOf(idAccount.toString(), initialDate, finalDate)
+
+        val cursor = sqLiteDatabase!!.query(
+            MyDatabaseConstants.TABLE_INCOME, null, selection, selectionArgs,null, null, null
+        )
+        while (cursor.moveToNext()) {
+            @SuppressLint("Range") val sum = cursor.getDouble(cursor.getColumnIndex(MyDatabaseConstants.SUM_INCOME))
+            allSum += sum
+        }
+        cursor.close()
+        return allSum
+    }
+
     // Метод позвращает сумму поступлений по определенной категории,
     // где category - идентификатор категория, по которой нужно делать выборку
     fun getSumIncomeByCategory(categoryID: Long) : Double{
@@ -814,6 +1050,18 @@ class MyDbManager(private val context: Context) {
         }
         cursor.close()
         return allSum
+    }
+
+    fun clearTableReceipts(){
+        sqLiteDatabase!!.delete(MyDatabaseConstants.TABLE_RECEIPTS,null,null)
+    }
+
+    fun clearTableBanks(){
+        sqLiteDatabase!!.delete(MyDatabaseConstants.TABLE_BANKS,null,null)
+    }
+
+    fun clearTableCurrencies(){
+        sqLiteDatabase!!.delete(MyDatabaseConstants.TABLE_CURRENCIES,null,null)
     }
 
     fun clearTableAccounts(){

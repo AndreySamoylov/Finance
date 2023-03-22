@@ -9,6 +9,12 @@
     </item>
     <item android:title="">
         <menu>
+            <item android:id="@+id/item_statistics" android:title="@string/statistics" android:icon="@drawable/baseline_query_stats_24"/>
+            <item android:id="@+id/item_receipts" android:title="@string/receipts" android:icon="@drawable/baseline_qr_code_24"/>
+        </menu>
+    </item>
+    <item android:title="">
+        <menu>
             <item android:id="@+id/item_save_data_to_server" android:title="@string/saveDataToServer" android:icon="@drawable/baseline_cloud_upload_24"/>
             <item android:id="@+id/item_load_data_from_server" android:title="@string/loadDataFromServer" android:icon="@drawable/baseline_cloud_download_24"/>
             <item android:id="@+id/item_read_from_cvs" android:title="@string/readFromCvsFile" android:icon="@drawable/baseline_upload_file_24"/>

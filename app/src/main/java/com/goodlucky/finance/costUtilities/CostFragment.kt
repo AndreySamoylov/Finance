@@ -22,7 +22,6 @@ import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.utils.ColorTemplate
-import kotlinx.coroutines.*
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
@@ -119,7 +118,7 @@ class CostFragment : Fragment() {
         myDbManager.openDatabase()
 
         // Создание адаптера для волчка выбора счетов
-        val accountList: ArrayList<MyAccount> = arrayListOf(MyAccount(0, "Все счета"))
+        val accountList: ArrayList<MyAccount> = arrayListOf(MyAccount(0, "Все счета", 0, 0))
         accountList.addAll(myDbManager.fromAccounts)
 
         val adapterAccounts = ArrayAdapter(
@@ -223,8 +222,6 @@ class CostFragment : Fragment() {
 
         val pieData = PieData(pieDataSet)
         pieChart.data = pieData
-
-        pieChart.setEntryLabelColor(R.color.black)
 
         pieChart.legend.form = Legend.LegendForm.CIRCLE
         pieChart.description.isEnabled = false

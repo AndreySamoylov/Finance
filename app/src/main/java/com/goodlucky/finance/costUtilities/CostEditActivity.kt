@@ -21,6 +21,7 @@ import com.goodlucky.finance.database.MyDbManager
 import com.goodlucky.finance.items.MyAccount
 import com.goodlucky.finance.items.MyCategory
 import com.goodlucky.finance.items.MyCost
+import com.goodlucky.finance.items.MyReceipt
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanIntentResult
 import com.journeyapps.barcodescanner.ScanOptions
@@ -151,6 +152,8 @@ class CostEditActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
+        myDbManager.openDatabase()
+
         state = intent.getStringExtra(MyConstants.STATE).toString()
         if(state == MyConstants.STATE_CHANGE_OR_DELETE){
             receivedCost = MyFunction.getSerializable(
@@ -178,8 +181,6 @@ class CostEditActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        myDbManager.openDatabase()
-
         // Создание адаптера для волчка для выбора счетов
         val adapterAccounts = ArrayAdapter(
             this,
@@ -195,8 +196,8 @@ class CostEditActivity : AppCompatActivity() {
         spinnerCategory.adapter = spinnerAdapter
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onDestroy() {
+        super.onDestroy()
         myDbManager.closeDatabase()
     }
 
@@ -268,8 +269,12 @@ class CostEditActivity : AppCompatActivity() {
                 Toast.LENGTH_LONG
             ).show()
 
-            //Обработка строки
+            //Добавление чека в базу данных
+            val receipt = MyReceipt(0, result.contents)
+            myDbManager.insertToReceipt(receipt)
 
+
+            //Обработка строки
             //Получение даты
             val calendar: Calendar = Calendar.getInstance()
             val year = result.contents.substring(2, 6).toInt()
@@ -281,7 +286,6 @@ class CostEditActivity : AppCompatActivity() {
             setDateTime(calendar.timeInMillis)
 
             // Получение суммы
-
             var sIndex = 0 // Индекс буквы 's'
             var pointIndex = 0 //Индекс точки '.'
             for (i in 0 until result.contents.length){

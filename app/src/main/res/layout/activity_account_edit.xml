@@ -30,17 +30,37 @@
         android:id="@+id/editTextAccountName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="50dp"
         android:autofillHints=""
         android:ems="10"
         android:hint="@string/inputName"
         android:inputType="textPersonName"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/AccountEditActivitySpinnerCurrency"
+        app:layout_constraintStart_toStartOf="@+id/AccountEditActivitySpinnerCurrency"
+        app:layout_constraintTop_toBottomOf="@+id/AccountEditActivitySpinnerCurrency" />
+
+    <Spinner
+        android:id="@+id/AccountEditActivitySpinnerBank"
+        android:layout_width="320dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="32dp"
+        android:contentDescription="@string/chooseBank"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintHorizontal_bias="0.258"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/AccountEditActivitySpinnerCurrency"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="50dp"
+        android:contentDescription="@string/chooseCurrency"
+        app:layout_constraintEnd_toEndOf="@+id/AccountEditActivitySpinnerBank"
+        app:layout_constraintStart_toStartOf="@+id/AccountEditActivitySpinnerBank"
+        app:layout_constraintTop_toBottomOf="@+id/AccountEditActivitySpinnerBank" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

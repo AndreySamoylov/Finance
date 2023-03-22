@@ -2,15 +2,50 @@ package com.goodlucky.finance.database
 
 object MyDatabaseConstants{
     const val DB_NAME = "finance.db"
-    const val DB_VERSION = 29
+    const val DB_VERSION = 35
+
+    //Таблица чеки
+    const val TABLE_RECEIPTS = "receipts"
+    const val ID_RECEIPT = "_id"
+    const val CODE_RECEIPT = "code"
+    const val TABLE_RECEIPTS_CREATE = "CREATE TABLE IF NOT EXISTS " + TABLE_RECEIPTS +
+            " (" + ID_RECEIPT + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            CODE_RECEIPT + " TEXT UNIQUE NOT NULL);"
+    const val TABLE_RECEIPTS_DROP = "DROP TABLE IF EXISTS $TABLE_RECEIPTS;"
+
+    //Таблица валюты
+    const val TABLE_CURRENCIES = "currencies"
+    const val ID_CURRENCY = "_id"
+    const val NAME_CURRENCY = "name_currency"
+    const val NAME_SHORT_CURRENCY = "name_short_currency"
+    const val EXCHANGE_RATE_CURRENCY = "exchange_rate_currency"
+    const val TABLE_CURRENCIES_CREATE = "CREATE TABLE IF NOT EXISTS " + TABLE_CURRENCIES +
+            " (" + ID_CURRENCY + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            NAME_CURRENCY + " TEXT UNIQUE NOT NULL," +
+            NAME_SHORT_CURRENCY + " TEXT UNIQUE NOT NULL," +
+            EXCHANGE_RATE_CURRENCY + " INTEGER);"
+    const val TABLE_CURRENCIES_DROP = "DROP TABLE IF EXISTS $TABLE_CURRENCIES;"
+
+    //Таблица банки
+    const val TABLE_BANKS = "banks"
+    const val ID_BANK = "_id"
+    const val NAME_BANK = "name"
+    const val TABLE_BANKS_CREATE = "CREATE TABLE IF NOT EXISTS " + TABLE_BANKS +
+            " (" + ID_BANK + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            NAME_BANK + " TEXT UNIQUE NOT NULL);"
+    const val TABLE_BANKS_DROP = "DROP TABLE IF EXISTS $TABLE_BANKS;"
 
     //Таблица счета
     const val TABLE_ACCOUNTS = "accounts"
     const val ID_ACCOUNT = "_id"
     const val NAME_ACCOUNT = "name"
+    const val ID_BANK_ACCOUNT = "id_bank"
+    const val ID_CURRENCY_ACCOUNT = "id_currency"
     const val TABLE_ACCOUNTS_CREATE = "CREATE TABLE IF NOT EXISTS " + TABLE_ACCOUNTS +
             " (" + ID_ACCOUNT + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            NAME_ACCOUNT + " TEXT UNIQUE NOT NULL);"
+            NAME_ACCOUNT + " TEXT UNIQUE NOT NULL," +
+            ID_BANK_ACCOUNT + " INTEGER NOT NULL," +
+            ID_CURRENCY_ACCOUNT + " INTEGER NOT NULL);"
     const val TABLE_ACCOUNTS_DROP = "DROP TABLE IF EXISTS $TABLE_ACCOUNTS;"
 
     ///Таблица категории

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="array_currencies_full_name">
+        <item name="ruble">Рубль</item>
+        <item name="dollar">Доллар</item>
+        <item name="euro">Евро</item>
+    </string-array>
+
+    <string-array name="array_currencies_short_name">
+        <item name="ruble">RUB</item>
+        <item name="dollar">USD</item>
+        <item name="euro">EUR</item>
+    </string-array>
+</resources>

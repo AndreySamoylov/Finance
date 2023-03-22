@@ -13,37 +13,40 @@
         android:theme="@style/Theme.Finance"
         tools:targetApi="31">
         <activity
-            android:name="com.goodlucky.finance.LoginActivity"
+            android:name=".statistics.StatisticActivity"
             android:exported="false" />
         <activity
-            android:name="com.goodlucky.finance.incomeUtilities.ListIncomeActivity"
+            android:name=".LoginActivity"
             android:exported="false" />
         <activity
-            android:name="com.goodlucky.finance.incomeUtilities.IncomeEditActivity"
+            android:name=".incomeUtilities.ListIncomeActivity"
             android:exported="false" />
         <activity
-            android:name="com.goodlucky.finance.costUtilities.ListCostActivity"
+            android:name=".incomeUtilities.IncomeEditActivity"
             android:exported="false" />
         <activity
-            android:name="com.goodlucky.finance.ReadCvsActivity"
+            android:name=".costUtilities.ListCostActivity"
             android:exported="false" />
         <activity
-            android:name="com.goodlucky.finance.costUtilities.CostEditActivity"
+            android:name=".ReadCvsActivity"
             android:exported="false" />
         <activity
-            android:name="com.goodlucky.finance.ColorPickerActivity"
+            android:name=".costUtilities.CostEditActivity"
             android:exported="false" />
         <activity
-            android:name="com.goodlucky.finance.categoryUtilities.CategoryEditActivity"
+            android:name=".ColorPickerActivity"
             android:exported="false" />
         <activity
-            android:name="com.goodlucky.finance.accountUtilities.AccountEditActivity"
+            android:name=".categoryUtilities.CategoryEditActivity"
             android:exported="false" />
         <activity
-            android:name="com.goodlucky.finance.settings.SettingsActivity"
+            android:name=".accountUtilities.AccountEditActivity"
             android:exported="false" />
         <activity
-            android:name="com.goodlucky.finance.MainActivity"
+            android:name=".settings.SettingsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

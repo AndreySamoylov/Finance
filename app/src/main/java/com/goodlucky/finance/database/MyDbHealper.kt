@@ -16,12 +16,18 @@ class MyDbHelper(context: Context?) :
     private val listCategoryCostImages = context?.resources?.obtainTypedArray(R.array.default_categories_cost_images)
     private val listCategoryIncomeNames: Array<String>? = context?.resources?.getStringArray(R.array.default_categories_income_names)
     private val listCategoryIncomeImages  = context?.resources?.obtainTypedArray(R.array.default_categories_income_images)
+    private val listBankNames  = context?.resources?.getStringArray(R.array.array_banks)
+    private val listCurrencyFullNames  = context?.resources?.getStringArray(R.array.array_currencies_full_name)
+    private val listCurrencyShortNames  = context?.resources?.getStringArray(R.array.array_currencies_short_name)
 
     override fun onCreate(sqLiteDatabase: SQLiteDatabase) {
         sqLiteDatabase.execSQL(MyDatabaseConstants.TABLE_COSTS_CREATE)
         sqLiteDatabase.execSQL(MyDatabaseConstants.TABLE_INCOME_CREATE)
         sqLiteDatabase.execSQL(MyDatabaseConstants.TABLE_CATEGORIES_CREATE)
         sqLiteDatabase.execSQL(MyDatabaseConstants.TABLE_ACCOUNTS_CREATE)
+        sqLiteDatabase.execSQL(MyDatabaseConstants.TABLE_BANKS_CREATE)
+        sqLiteDatabase.execSQL(MyDatabaseConstants.TABLE_CURRENCIES_CREATE)
+        sqLiteDatabase.execSQL(MyDatabaseConstants.TABLE_RECEIPTS_CREATE)
 
         // Добавить категории по умолчанию
         // расходы
@@ -62,6 +68,28 @@ class MyDbHelper(context: Context?) :
             sqLiteDatabase.insert(MyDatabaseConstants.TABLE_CATEGORIES, null, contentValues)
         }
 
+        //Добавление банков
+        for (i in 0 until listBankNames?.size!!){
+            val contentValues = ContentValues()
+            contentValues.put(MyDatabaseConstants.NAME_BANK, listBankNames[i])
+            sqLiteDatabase.insert(MyDatabaseConstants.TABLE_BANKS, null, contentValues)
+        }
+
+        //Добавление валют
+        for (i in 0 until listCurrencyFullNames?.size!!){
+            val contentValues = ContentValues()
+            contentValues.put(MyDatabaseConstants.NAME_CURRENCY, listCurrencyFullNames[i])
+            contentValues.put(MyDatabaseConstants.NAME_SHORT_CURRENCY, listCurrencyShortNames!![i])
+            contentValues.put(MyDatabaseConstants.EXCHANGE_RATE_CURRENCY, 0)
+            sqLiteDatabase.insert(MyDatabaseConstants.TABLE_CURRENCIES, null, contentValues)
+        }
+
+        //Добавление чека
+//        val contentValuesReceipt = ContentValues()
+//        contentValuesReceipt.put(MyDatabaseConstants.ID_RECEIPT, 0)
+//        contentValuesReceipt.put(MyDatabaseConstants.CODE_RECEIPT, "Я чек")
+//        sqLiteDatabase.insert(MyDatabaseConstants.TABLE_RECEIPTS, null, contentValuesReceipt)
+
         listCategoryCostImages?.recycle()
         listCategoryIncomeImages?.recycle()
     }
@@ -71,6 +99,9 @@ class MyDbHelper(context: Context?) :
         sqLiteDatabase.execSQL(MyDatabaseConstants.TABLE_INCOME_DROP)
         sqLiteDatabase.execSQL(MyDatabaseConstants.TABLE_ACCOUNTS_DROP)
         sqLiteDatabase.execSQL(MyDatabaseConstants.TABLE_CATEGORIES_DROP)
+        sqLiteDatabase.execSQL(MyDatabaseConstants.TABLE_BANKS_DROP)
+        sqLiteDatabase.execSQL(MyDatabaseConstants.TABLE_CURRENCIES_DROP)
+        sqLiteDatabase.execSQL(MyDatabaseConstants.TABLE_RECEIPTS_DROP)
         onCreate(sqLiteDatabase)
     }
 

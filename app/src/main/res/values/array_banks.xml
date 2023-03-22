@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="array_banks">
+        <item>ПАО Сбербанк</item>
+        <item>Банк ВТБ (ПАО)</item>
+        <item>Банк ГПБ (АО)</item>
+        <item>АО Россельхозбанк</item>
+        <item>АО Тинькофф Банк</item>
+        <item>ПАО Челябинвестбанк</item>
+    </string-array>
+</resources>

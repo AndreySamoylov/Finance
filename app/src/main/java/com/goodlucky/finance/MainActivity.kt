@@ -23,6 +23,7 @@ import com.goodlucky.finance.firebase.MyFirebaseUserData
 import com.goodlucky.finance.incomeUtilities.IncomeFragment
 import com.goodlucky.finance.items.*
 import com.goodlucky.finance.settings.SettingsActivity
+import com.goodlucky.finance.statistics.StatisticActivity
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -82,6 +83,13 @@ class MainActivity : AppCompatActivity() {
                 R.id.item_enter_account -> {
                     val intent = Intent(this@MainActivity, LoginActivity::class.java)
                     startActivity(intent)
+                }
+                R.id.item_statistics -> {
+                    val intent = Intent(this@MainActivity, StatisticActivity::class.java)
+                    startActivity(intent)
+                }
+                R.id.item_receipts -> {
+                    Toast.makeText(this, "Чеки", Toast.LENGTH_SHORT ).show()
                 }
                 R.id.item_save_data_to_server -> {
                     val dialogClickListener = DialogInterface.OnClickListener { dialog, which ->
@@ -150,9 +158,12 @@ class MainActivity : AppCompatActivity() {
             val listIncome: List<MyIncome> = myDbManager.fromIncome
             val listCategory: List<MyCategoryFirebase> = myDbManager.fromCategoriesFirebaseType
             val listAccount: List<MyAccount> = myDbManager.fromAccounts
+            val listBank: List<MyBank> = myDbManager.fromBanks()
+            val listCurrency: List<MyCurrency> = myDbManager.fromCurrencies()
+            val listReceipt: List<MyReceipt> = myDbManager.fromReceipts()
             myDbManager.closeDatabase()
             val allData =
-                MyFirebaseUserData(listCost, listIncome, listCategory, listAccount)
+                MyFirebaseUserData(listCost, listIncome, listCategory, listAccount, listBank, listCurrency, listReceipt)
             val userName = myAuth.currentUser!!.email.toString().replace(".", "")
             myDataBase.child(userName).setValue(allData)
             Toast.makeText(this@MainActivity, R.string.dataSuccesfulSave,Toast.LENGTH_SHORT).show()
@@ -172,9 +183,24 @@ class MainActivity : AppCompatActivity() {
                 val listIncome = allData?.listIncome
                 val listCategory = allData?.listCategory
                 val listAccount = allData?.listAccount
+                val listBank = allData?.listBank
+                val listCurrency = allData?.listCurrency
+                val listReceipt = allData?.listReceipt
                 // Полное обновление базы данных
                 myDbManager.openDatabase()
 
+                myDbManager.clearTableReceipts()
+                for (receipt in listReceipt!!){
+                    myDbManager.insertToReceiptWithID(receipt)
+                }
+                myDbManager.clearTableBanks()
+                for (bank in listBank!!){
+                    myDbManager.insertToBanksWithId(bank)
+                }
+                myDbManager.clearTableCurrencies()
+                for(currency in listCurrency!!){
+                    myDbManager.insertToCurrenciesWithId(currency)
+                }
                 myDbManager.clearTableCategories()
                 for (category in listCategory!!) {
                     // Переделывает категорию в нужный формат, т.к. она сохранялась в другом
@@ -189,9 +215,7 @@ class MainActivity : AppCompatActivity() {
                     myDbManager.insertToCategoriesWithID(myCategory)
                 }
                 myDbManager.clearTableAccounts()
-                for (account in listAccount!!) myDbManager.insertToAccountsWithID(
-                    account
-                )
+                for (account in listAccount!!) myDbManager.insertToAccountsWithID(account)
                 myDbManager.clearTableCosts()
                 for (cost in listCost!!) myDbManager.insertToCostsWithID(cost)
                 myDbManager.clearTableIncome()

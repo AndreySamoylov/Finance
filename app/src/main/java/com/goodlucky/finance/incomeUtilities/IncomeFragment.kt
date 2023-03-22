@@ -118,7 +118,7 @@ class IncomeFragment : Fragment() {
         myDbManager.openDatabase()
 
         // Создание адаптера для волчка выбора счетов
-        val accountList: ArrayList<MyAccount> = arrayListOf(MyAccount(0, "Все счета"))
+        val accountList: ArrayList<MyAccount> = arrayListOf(MyAccount(0, "Все счета",0,0))
         accountList.addAll(myDbManager.fromAccounts)
 
         val adapterAccounts = ArrayAdapter(
@@ -223,8 +223,6 @@ class IncomeFragment : Fragment() {
 
         val pieData = PieData(pieDataSet)
         pieChart.data = pieData
-
-        pieChart.setEntryLabelColor(R.color.black)
 
         pieChart.legend.form = Legend.LegendForm.CIRCLE
         pieChart.description.isEnabled = false

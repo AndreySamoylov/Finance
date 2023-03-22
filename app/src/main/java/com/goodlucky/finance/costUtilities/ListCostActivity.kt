@@ -93,7 +93,7 @@ class ListCostActivity : AppCompatActivity(), MyCostAdapter.Listener {
         myDbManager.openDatabase()
 
         // Создание адаптера для волчка выбора счетов
-        val accountList : ArrayList<MyAccount> = arrayListOf(MyAccount(0, "Все счета"))
+        val accountList : ArrayList<MyAccount> = arrayListOf(MyAccount(0, "Все счета", 0, 0))
         accountList.addAll(myDbManager.fromAccounts)
         val adapterAccounts = ArrayAdapter(
             this,

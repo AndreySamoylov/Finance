@@ -3,7 +3,7 @@
     <string name="no">Нет</string>
 
     <!--Существительные-->
-    <string name="app_name">Finance</string>
+    <string name="app_name">Финансы</string>
     <string name="income">Поступления</string>
     <string name="cost">Расходы</string>
     <string name="costRadioButton">Расход</string>
@@ -47,6 +47,8 @@
     <string name="chooseImage">Выберите изображение</string>
     <string name="chooseCategory">Выберите категорию</string>
     <string name="chooseAccount">Выберите счёт</string>
+    <string name="chooseBank">Выберите банк</string>
+    <string name="chooseCurrency">Выберите валюту</string>
     <string name="changeDate">Изменить дату</string>
     <string name="scanned">Отсканировано</string>
     <string name="youDoNotEnterAccount">Вы не вошли в аккаунт</string>
@@ -77,6 +79,8 @@
 
     <!-- Заголовки для элементов меню-->
     <string name="enterAccount">Войти в аккаунт</string>
+    <string name="statistics">Статистика</string>
+    <string name="receipts">Чеки</string>
     <string name="saveDataToServer">Сохранить данные на сервер</string>
     <string name="loadDataFromServer">Загрузить данные c сервера</string>
     <string name="readFromCvsFile">Чтение из CVS файла</string>
@@ -90,4 +94,6 @@
     <string name="theme">Тема</string>
     <string name="light">Светлая</string>
     <string name="night">Тёмная</string>
+
+    <string name="textStatisticsResult">Доходы: + \nРасходы: - \nИтого </string>
 </resources>
