@@ -17,10 +17,8 @@ import com.goodlucky.finance.items.MyAccount
 
 class AccountFragment : Fragment(), MyAccountAdapter.Listener {
 
-    private val adapter = MyAccountAdapter(this)
-
+    private lateinit var adapter : MyAccountAdapter
     private lateinit var myDbManager : MyDbManager
-
     private lateinit var currentContext: Context
 
     override fun onCreateView(
@@ -28,7 +26,7 @@ class AccountFragment : Fragment(), MyAccountAdapter.Listener {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-
+        adapter = MyAccountAdapter(this, inflater.context)
         myDbManager = MyDbManager(inflater.context)
         currentContext = inflater.context
 

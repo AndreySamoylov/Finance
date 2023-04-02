@@ -7,16 +7,16 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import com.goodlucky.finance.items.*
 
-class MyDbManager(private val context: Context) {
-    private val myDbHealper: MyDbHelper = MyDbHelper(context)
+class MyDbManager(context: Context) {
+    private val myDbHelper: MyDbHelper = MyDbHelper(context)
     private var sqLiteDatabase: SQLiteDatabase? = null
 
     fun openDatabase() {
-        sqLiteDatabase = myDbHealper.writableDatabase
+        sqLiteDatabase = myDbHelper.writableDatabase
     }
 
     fun closeDatabase() {
-        myDbHealper.close()
+        myDbHelper.close()
     }
 
     fun insertToReceipt(receipt: MyReceipt){
@@ -83,6 +83,18 @@ class MyDbManager(private val context: Context) {
         return tempList
     }
 
+    fun getBankName(id : Long) : String{
+        val columns = arrayOf(MyDatabaseConstants.NAME_BANK)
+        val selection = MyDatabaseConstants.ID_BANK + " = ?"
+        val selectionArgs = arrayOf(id.toString())
+        val cursor = sqLiteDatabase!!.query(MyDatabaseConstants.TABLE_BANKS, columns, selection, selectionArgs,
+            null,null,null,"1")
+        var nameBank = ""
+        while (cursor.moveToNext()) {nameBank = cursor.getString(cursor.getColumnIndexOrThrow(MyDatabaseConstants.NAME_BANK))}
+        cursor.close()
+        return nameBank
+    }
+
     fun insertToCurrenciesWithId(currency: MyCurrency){
         val contentValues = ContentValues()
         contentValues.put(MyDatabaseConstants.ID_RECEIPT, currency._id)
@@ -108,6 +120,18 @@ class MyDbManager(private val context: Context) {
         return tempList
     }
 
+    fun getCurrencyName(id : Long) : String{
+        val columns = arrayOf(MyDatabaseConstants.NAME_CURRENCY)
+        val selection = MyDatabaseConstants.ID_CURRENCY + " = ?"
+        val selectionArgs = arrayOf(id.toString())
+        val cursor = sqLiteDatabase!!.query(MyDatabaseConstants.TABLE_CURRENCIES, columns, selection, selectionArgs,
+            null,null,null,"1")
+        var nameCurrency = ""
+        while (cursor.moveToNext()) {nameCurrency = cursor.getString(cursor.getColumnIndexOrThrow(MyDatabaseConstants.NAME_CURRENCY))}
+        cursor.close()
+        return nameCurrency
+    }
+
     fun insertToAccounts(account: MyAccount) {
         val contentValues = ContentValues()
         contentValues.put(MyDatabaseConstants.NAME_ACCOUNT, account.name)
@@ -127,6 +151,7 @@ class MyDbManager(private val context: Context) {
 
     fun updateInAccounts(account: MyAccount) {
         val values = ContentValues().apply {
+            put(MyDatabaseConstants.ID_ACCOUNT, account._id)
             put(MyDatabaseConstants.NAME_ACCOUNT, account.name)
             put(MyDatabaseConstants.ID_BANK_ACCOUNT, account.idBank)
             put(MyDatabaseConstants.ID_CURRENCY_ACCOUNT, account.idCurrency)
@@ -165,6 +190,25 @@ class MyDbManager(private val context: Context) {
             cursor.close()
             return tempList
         }
+
+    /// Метод возвращает список счетов, с выборкой по валютам
+    fun fromAccountsByCurrency(idCurrency : Long) : List<MyAccount>{
+        val selection = MyDatabaseConstants.ID_CURRENCY_ACCOUNT + " = ?"
+        val selectionArgs = arrayOf(idCurrency.toString())
+
+        val tempList: MutableList<MyAccount> = ArrayList()
+        val cursor = sqLiteDatabase!!.query(MyDatabaseConstants.TABLE_ACCOUNTS,null,
+            selection, selectionArgs,null,null,null,)
+        while (cursor.moveToNext()) {
+            @SuppressLint("Range") val id = cursor.getLong(cursor.getColumnIndex(MyDatabaseConstants.ID_ACCOUNT))
+            @SuppressLint("Range") val name = cursor.getString(cursor.getColumnIndex(MyDatabaseConstants.NAME_ACCOUNT))
+            @SuppressLint("Range") val idBank = cursor.getLong(cursor.getColumnIndex(MyDatabaseConstants.ID_BANK))
+            val account = MyAccount(id, name, idBank, idCurrency)
+            tempList.add(account)
+        }
+        cursor.close()
+        return tempList
+    }
 
     // Метод ищет название счёта по его id
     // В случае успеха возвращает имя, в противном случае пустую строку
@@ -497,8 +541,7 @@ class MyDbManager(private val context: Context) {
 
     //Метод возвращает сумму расходов за всё время
     fun getSumCost()  : Double{
-        var allSum : Double = 0.0
-
+        var allSum = 0.0
         val cursor = sqLiteDatabase!!.query(
             MyDatabaseConstants.TABLE_COSTS, null, null, null,null, null, null
         )
@@ -513,7 +556,7 @@ class MyDbManager(private val context: Context) {
 
     //Метод возвращает сумму расходов по выбранному счёту
     fun getSumCostByAccount(idAccount : Long) : Double{
-        var allSum : Double = 0.0
+        var allSum = 0.0
 
         val selection = "${MyDatabaseConstants.ID_ACCOUNT_COST} = ?"
         val selectionArgs = arrayOf(idAccount.toString())
@@ -531,7 +574,7 @@ class MyDbManager(private val context: Context) {
     }
 
     fun getSumCostByAccount(initialDate : String, finalDate : String) : Double{
-        var allSum : Double = 0.0
+        var allSum = 0.0
 
         val selection = "${MyDatabaseConstants.DATE_COST} >= ? AND ${MyDatabaseConstants.DATE_COST} <= ?"
         val selectionArgs = arrayOf(initialDate, finalDate)
@@ -548,7 +591,7 @@ class MyDbManager(private val context: Context) {
     }
 
     fun getSumCostByAccount(idAccount : Long, initialDate : String, finalDate : String) : Double{
-        var allSum : Double = 0.0
+        var allSum = 0.0
 
         val selection = "${MyDatabaseConstants.ID_ACCOUNT_COST} = ? AND ${MyDatabaseConstants.DATE_COST} >= ? AND ${MyDatabaseConstants.DATE_COST} <= ?"
         val selectionArgs = arrayOf(idAccount.toString(), initialDate, finalDate)
@@ -567,7 +610,7 @@ class MyDbManager(private val context: Context) {
     // Метод позвращает сумму покупок по определенной категории,
     // где category - идентификатор категория, по которой нужно делать выборку
     fun getSumCostByCategory(categoryID: Long) : Double{
-        var allSum : Double = 0.0
+        var allSum = 0.0
 
         val selection = "${MyDatabaseConstants.ID_CATEGORY_COST} = ?"
         val selectionArgs = arrayOf(categoryID.toString())
@@ -589,7 +632,7 @@ class MyDbManager(private val context: Context) {
     // где category - идентификатор категория, по которой делается выборка,
     // а accountID - идентификатор аккаунта. по которому делается выборка
     fun getSumCostByCategory(categoryID: Long, accountID : Long) : Double{
-        var allSum : Double = 0.0
+        var allSum = 0.0
 
         val selection = "${MyDatabaseConstants.ID_CATEGORY_COST} = ? AND ${MyDatabaseConstants.ID_ACCOUNT_COST} = ?"
         val selectionArgs = arrayOf(categoryID.toString(), accountID.toString())
@@ -611,7 +654,7 @@ class MyDbManager(private val context: Context) {
     // accountID - идентификатор аккаунта. по которому делается выборка
     // initialDate и finalDate промежуток дат, между которыми делается выборка
     fun getSumCostByCategory(categoryID: Long, initialDate: String, finalDate: String) : Double{
-        var allSum : Double = 0.0
+        var allSum = 0.0
 
         val selection = "${MyDatabaseConstants.ID_CATEGORY_COST} = ? AND " +
                 "${MyDatabaseConstants.DATE_COST} >= ? AND " +
@@ -636,7 +679,7 @@ class MyDbManager(private val context: Context) {
     // accountID - идентификатор аккаунта. по которому делается выборка,
     // initialDate и finalDate промежуток дат, между которыми делается выборка
     fun getSumCostByCategory(categoryID: Long, accountID : Long, initialDate: String, finalDate: String) : Double{
-        var allSum : Double = 0.0
+        var allSum = 0.0
 
         val selection = "${MyDatabaseConstants.ID_CATEGORY_COST} = ? AND " +
                 "${MyDatabaseConstants.ID_ACCOUNT_COST} = ? AND " +
@@ -894,7 +937,7 @@ class MyDbManager(private val context: Context) {
 
     //Метод возвращает сумму доходов за всё время
     fun getSumIncome()  : Double{
-        var allSum : Double = 0.0
+        var allSum = 0.0
 
         val cursor = sqLiteDatabase!!.query(
             MyDatabaseConstants.TABLE_INCOME, null, null, null,null, null, null
@@ -909,7 +952,7 @@ class MyDbManager(private val context: Context) {
 
     //Метод возвращает сумму доходов по выбранному счёту
     fun getSumIncomeByAccount(idAccount : Long) : Double{
-        var allSum : Double = 0.0
+        var allSum = 0.0
 
         val selection = "${MyDatabaseConstants.ID_ACCOUNT_INCOME} = ?"
         val selectionArgs = arrayOf(idAccount.toString())
@@ -926,7 +969,7 @@ class MyDbManager(private val context: Context) {
     }
 
     fun getSumIncomeByAccount(initialDate : String, finalDate : String) : Double{
-        var allSum : Double = 0.0
+        var allSum = 0.0
 
         val selection = "${MyDatabaseConstants.DATE_INCOME} >= ? AND ${MyDatabaseConstants.DATE_INCOME} <= ?"
         val selectionArgs = arrayOf(initialDate, finalDate)
@@ -943,7 +986,7 @@ class MyDbManager(private val context: Context) {
     }
 
     fun getSumIncomeByAccount(idAccount : Long, initialDate : String, finalDate : String) : Double{
-        var allSum : Double = 0.0
+        var allSum = 0.0
 
         val selection = "${MyDatabaseConstants.ID_ACCOUNT_INCOME} = ? AND ${MyDatabaseConstants.DATE_INCOME} >= ? AND ${MyDatabaseConstants.DATE_INCOME} <= ?"
         val selectionArgs = arrayOf(idAccount.toString(), initialDate, finalDate)
@@ -962,7 +1005,7 @@ class MyDbManager(private val context: Context) {
     // Метод позвращает сумму поступлений по определенной категории,
     // где category - идентификатор категория, по которой нужно делать выборку
     fun getSumIncomeByCategory(categoryID: Long) : Double{
-        var allSum : Double = 0.0
+        var allSum = 0.0
 
         val selection = "${MyDatabaseConstants.ID_CATEGORY_INCOME} = ?"
         val selectionArgs = arrayOf(categoryID.toString())
@@ -984,7 +1027,7 @@ class MyDbManager(private val context: Context) {
     // где category - идентификатор категория, по которой делается выборка,
     // а accountID - идентификатор аккаунта. по которому делается выборка
     fun getSumIncomeByCategory(categoryID: Long, accountID : Long) : Double{
-        var allSum : Double = 0.0
+        var allSum = 0.0
 
         val selection = "${MyDatabaseConstants.ID_CATEGORY_INCOME} = ? AND ${MyDatabaseConstants.ID_ACCOUNT_INCOME} = ?"
         val selectionArgs = arrayOf(categoryID.toString(), accountID.toString())
@@ -1006,7 +1049,7 @@ class MyDbManager(private val context: Context) {
     // accountID - идентификатор аккаунта. по которому делается выборка
     // initialDate и finalDate промежуток дат, между которыми делается выборка
     fun getSumIncomeByCategory(categoryID: Long, initialDate: String, finalDate: String) : Double{
-        var allSum : Double = 0.0
+        var allSum = 0.0
 
         val selection = "${MyDatabaseConstants.ID_CATEGORY_INCOME} = ? AND " +
                 "${MyDatabaseConstants.DATE_INCOME} >= ? AND " +
@@ -1031,7 +1074,7 @@ class MyDbManager(private val context: Context) {
     // accountID - идентификатор аккаунта. по которому делается выборка,
     // initialDate и finalDate промежуток дат, между которыми делается выборка
     fun getSumIncomeByCategory(categoryID: Long, accountID : Long, initialDate: String, finalDate: String) : Double{
-        var allSum : Double = 0.0
+        var allSum = 0.0
 
         val selection = "${MyDatabaseConstants.ID_CATEGORY_INCOME} = ? AND " +
                 "${MyDatabaseConstants.ID_ACCOUNT_INCOME} = ? AND " +

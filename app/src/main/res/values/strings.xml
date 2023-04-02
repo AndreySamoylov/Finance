@@ -11,6 +11,7 @@
     <string name="category">Категория</string>
     <string name="categories">Категории</string>
     <string name="accounts">Счета</string>
+    <string name="allAccounts">Все счета</string>
     <string name="date">Дата</string>
     <string name="other">Остальное</string>
     <string name="sum">Сумма</string>
@@ -58,6 +59,9 @@
     <string name="signOut">Выйти</string>
 
     <!-- Всплывающие сообщения -->
+    <string name="accountTextFewLenght">Добавьте больше символов в названии</string>
+    <string name="costSumWrongSum">Введите другую сумму</string>
+
     <string name="recordHaveAdded">Запись была добавлена</string>
     <string name="categoryHaveAdded">Категория была добавлена</string>
     <string name="accountHaveAdded">Счёт был добавлен</string>

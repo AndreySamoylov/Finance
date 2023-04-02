@@ -16,8 +16,11 @@ import com.goodlucky.finance.database.MyDbManager
 import com.goodlucky.finance.databinding.ActivityStatisticBinding
 import com.goodlucky.finance.items.MyAccount
 import com.goodlucky.finance.items.MyCategoryWithSum
+import com.goodlucky.finance.items.MyCurrency
+import java.text.DecimalFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.milliseconds
 
 class StatisticActivity : AppCompatActivity(), CategoryStatisticAdapter.Listener {
@@ -81,6 +84,18 @@ class StatisticActivity : AppCompatActivity(), CategoryStatisticAdapter.Listener
 
             }
         }
+
+        binding.statisticsSpinnerCurrencies.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                createAccountAdapter()
+                createAdapterCategoryWithSum()
+                setSumCostsAndIncome()
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+
+            }
+        }
     }
 
     override fun onResume() {
@@ -112,10 +127,11 @@ class StatisticActivity : AppCompatActivity(), CategoryStatisticAdapter.Listener
             else "${year}-${month}-01"
         }
 
-        createAccountAdapter()
-        // createAdapterCategoryWithSum()
+        // Создание адаптера списка валют
+        val adapterCurrency = ArrayAdapter(this@StatisticActivity, android.R.layout.simple_spinner_dropdown_item, myDbManager.fromCurrencies())
+        binding.statisticsSpinnerCurrencies.adapter = adapterCurrency
 
-        //setSumCostsAndIncome()
+        createAccountAdapter()
 
         setDateTimeFinal(calendar.timeInMillis)  //  Установка текущей даты
 
@@ -210,13 +226,18 @@ class StatisticActivity : AppCompatActivity(), CategoryStatisticAdapter.Listener
         setSumCostsAndIncome()
     }
 
-    // Метод создат адаптер для списка счетов
+    // Создание адаптера списка счетов
     private fun createAccountAdapter(){
-        val accountList: ArrayList<MyAccount> = arrayListOf(MyAccount(0, "Все счета", 0, 0))
-        accountList.addAll(myDbManager.fromAccounts)
+        val selectedCurrency = binding.statisticsSpinnerCurrencies.selectedItem as MyCurrency
+        val accountList: java.util.ArrayList<MyAccount> = arrayListOf(MyAccount(0, this.resources.getString(R.string.allAccounts), 0, selectedCurrency._id))
+        accountList.addAll(myDbManager.fromAccountsByCurrency(selectedCurrency._id))
 
-        val adapterAccounts = ArrayAdapter(this@StatisticActivity,R.layout.account_item,
-            R.id.textViewItemAccountName,accountList)
+        val adapterAccounts = ArrayAdapter(
+            this@StatisticActivity,
+            R.layout.account_item,
+            R.id.textViewItemAccountName,
+            accountList
+        )
         binding.statisticsSpinnerAccounts.adapter = adapterAccounts
     }
 
@@ -224,13 +245,23 @@ class StatisticActivity : AppCompatActivity(), CategoryStatisticAdapter.Listener
     private fun createAdapterCategoryWithSum(){
         val listCategoriesWithSum = ArrayList<MyCategoryWithSum>()
 
+        //***Расходы***
         val listCategoriesCost = myDbManager.fromCategories(MyConstants.CATEGORY_TYPE_COST)
 
         val selectedAccount = binding.statisticsSpinnerAccounts.selectedItem as MyAccount
         for(category in listCategoriesCost){
             //Если выбраны всё счета, иначе какой-то конкретно
-            val sum = if (selectedAccount._id == (0).toLong()) myDbManager.getSumCostByCategory(category._id,  initialDate, finalDate)
-            else myDbManager.getSumCostByCategory(category._id, selectedAccount._id, initialDate, finalDate)
+            var sum = 0.0
+            if (selectedAccount._id == (0).toLong()) {
+                val selectedCurrency = binding.statisticsSpinnerCurrencies.selectedItem as MyCurrency
+                val listAccounts = myDbManager.fromAccountsByCurrency(selectedCurrency._id)
+                for (account in listAccounts){
+                    sum += myDbManager.getSumCostByCategory(category._id, account._id, initialDate, finalDate).roundToInt()
+                }
+            }
+            else{
+                sum= myDbManager.getSumCostByCategory(category._id, selectedAccount._id, initialDate, finalDate)
+            }
 
             if(sum != 0.0) {
                 val myCategoryWithSum = MyCategoryWithSum(category._id, category._name, category._color,
@@ -239,11 +270,21 @@ class StatisticActivity : AppCompatActivity(), CategoryStatisticAdapter.Listener
             }
         }
 
+        //***Доходы***
         val listCategoriesIncome = myDbManager.fromCategories(MyConstants.CATEGORY_TYPE_INCOME)
         for(category in listCategoriesIncome){
             //Если выбраны всё счета, иначе какой-то конкретно
-            val sum = if (selectedAccount._id == (0).toLong()) myDbManager.getSumIncomeByCategory(category._id,  initialDate, finalDate)
-            else myDbManager.getSumIncomeByCategory(category._id, selectedAccount._id, initialDate, finalDate)
+            var sum = 0.0
+            if (selectedAccount._id == (0).toLong()){
+                val selectedCurrency = binding.statisticsSpinnerCurrencies.selectedItem as MyCurrency
+                val listAccounts = myDbManager.fromAccountsByCurrency(selectedCurrency._id)
+                for (account in listAccounts){
+                    sum += myDbManager.getSumIncomeByCategory(category._id, account._id, initialDate, finalDate).roundToInt()
+                }
+            }
+            else{
+                sum = myDbManager.getSumIncomeByCategory(category._id, selectedAccount._id, initialDate, finalDate)
+            }
 
             if (sum != 0.0) {
                 val myCategoryWithSum = MyCategoryWithSum(category._id, category._name, category._color,
@@ -258,16 +299,37 @@ class StatisticActivity : AppCompatActivity(), CategoryStatisticAdapter.Listener
     // Установить сумму расходов и доходов
     private fun setSumCostsAndIncome(){
         val account = findViewById<Spinner>(R.id.statisticsSpinnerAccounts) .selectedItem as MyAccount
-        sumCosts =
-            if (account._id == (0).toLong()) myDbManager.getSumCostByAccount(initialDate, finalDate)
-            else myDbManager.getSumCostByAccount(account._id, initialDate, finalDate)
-        sumIncomes =
-            if (account._id == (0).toLong()) myDbManager.getSumIncomeByAccount(initialDate, finalDate)
-            else myDbManager.getSumIncomeByAccount(account._id, initialDate, finalDate)
+        sumCosts = 0.0
+            if (account._id == (0).toLong()){
+                val selectedCurrency = binding.statisticsSpinnerCurrencies.selectedItem as MyCurrency
+                val listAccounts = myDbManager.fromAccountsByCurrency(selectedCurrency._id)
+                for (myAccount in listAccounts){
+                    sumCosts += myDbManager.getSumCostByAccount(myAccount._id, initialDate, finalDate)
+                }
+            }
+            else{
+                sumCosts = myDbManager.getSumCostByAccount(account._id, initialDate, finalDate)
+            }
+        sumIncomes = 0.0
+            if (account._id == (0).toLong()){
+                val selectedCurrency = binding.statisticsSpinnerCurrencies.selectedItem as MyCurrency
+                val listAccounts = myDbManager.fromAccountsByCurrency(selectedCurrency._id)
+                for (myAccount in listAccounts){
+                    sumIncomes += myDbManager.getSumIncomeByAccount(myAccount._id, initialDate, finalDate)
+                }
+            }
+            else {
+                sumIncomes = myDbManager.getSumIncomeByAccount(account._id, initialDate, finalDate)
+            }
+
+        val decimalFormat = DecimalFormat("##0.00")
+        val strSumCosts: String = decimalFormat.format(sumCosts)
+        val strSumIncomes: String = decimalFormat.format(sumIncomes)
+        val strResult : String = decimalFormat.format(sumIncomes - sumCosts)
 
         binding.statisticsMainResultText.text = ""
-        binding.statisticsMainResultText.append("Расходы: - $sumCosts \n")
-        binding.statisticsMainResultText.append("Доходы: + $sumIncomes \n")
-        binding.statisticsMainResultText.append("Итого: ${sumIncomes - sumCosts} \n")
+        binding.statisticsMainResultText.append("Расходы: - $strSumCosts \n")
+        binding.statisticsMainResultText.append("Доходы: + $strSumIncomes \n")
+        binding.statisticsMainResultText.append("Итого: $strResult \n")
     }
 }

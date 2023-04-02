@@ -3,25 +3,27 @@ package com.goodlucky.finance.incomeUtilities
 import android.app.DatePickerDialog
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
 import android.text.format.DateUtils
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import com.goodlucky.finance.MyConstants
-import com.goodlucky.finance.R
-import com.goodlucky.finance.database.MyDbManager
-import com.goodlucky.finance.items.MyAccount
+import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.utils.ColorTemplate
+import com.goodlucky.finance.MyConstants
+import com.goodlucky.finance.R
+import com.goodlucky.finance.database.MyDbManager
+import com.goodlucky.finance.items.MyAccount
+import com.goodlucky.finance.items.MyCurrency
 import java.util.*
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.milliseconds
@@ -32,6 +34,7 @@ class IncomeFragment : Fragment() {
     private lateinit var buttonGoToAllIncomeOperations: Button
     private lateinit var pieChart: PieChart
     private lateinit var spinnerAccounts : Spinner
+    private lateinit var spinnerCurrencies : Spinner
     private lateinit var editTextInitialDateCost : EditText
     private lateinit var initialDate : String
     private lateinit var editTextFinalDateCost : EditText
@@ -62,6 +65,7 @@ class IncomeFragment : Fragment() {
         buttonGoToAllIncomeOperations = view.findViewById(R.id.fragmentIncomebuttonGoToAllIncomeOperations)
         pieChart = view.findViewById(R.id.pieChartIncome)
         spinnerAccounts = view.findViewById(R.id.fragmentIncomeSpinnerAccount)
+        spinnerCurrencies = view.findViewById(R.id.fragmentIncomeSpinnerCurrencies)
         editTextInitialDateCost = view.findViewById(R.id.fragmentIncomeInitialDate)
         editTextFinalDateCost = view.findViewById(R.id.fragmentIncomeFinalDate)
         
@@ -69,6 +73,16 @@ class IncomeFragment : Fragment() {
         spinnerAccounts.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 createPieChart()
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+
+            }
+        }
+
+        spinnerCurrencies.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                createAccountAdapter()
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -117,17 +131,11 @@ class IncomeFragment : Fragment() {
         super.onResume()
         myDbManager.openDatabase()
 
-        // Создание адаптера для волчка выбора счетов
-        val accountList: ArrayList<MyAccount> = arrayListOf(MyAccount(0, "Все счета",0,0))
-        accountList.addAll(myDbManager.fromAccounts)
+        // Создание адаптера списка валют
+        val adapterCurrency = ArrayAdapter(currentContext, android.R.layout.simple_spinner_dropdown_item, myDbManager.fromCurrencies())
+        spinnerCurrencies.adapter = adapterCurrency
 
-        val adapterAccounts = ArrayAdapter(
-            currentContext,
-            R.layout.account_item,
-            R.id.textViewItemAccountName,
-            accountList
-        )
-        spinnerAccounts.adapter = adapterAccounts
+        createAccountAdapter()
 
         // Инициализация календаря
         val calendar: Calendar = Calendar.getInstance()
@@ -187,10 +195,17 @@ class IncomeFragment : Fragment() {
         var allSum = 0f // Сумма всех расходов
         val categoryList = myDbManager.fromCategories // Список категорий
         for (category in categoryList){
-            // Если выбран 1-ый элемент волчка, то есть нужно делать выборку из всех счетов
-            // Иначе сделать выборку из одного выбранного счёта
-            val sum = if (selectedAccount._id == (0).toLong()) myDbManager.getSumIncomeByCategory(category._id, initialDate, finalDate).roundToInt() // Сумма расхода по категории
-            else myDbManager.getSumIncomeByCategory(category._id, selectedAccount._id, initialDate, finalDate).roundToInt() // Сумма расхода по категории
+            var sum = 0
+            if (selectedAccount._id == (0).toLong()) {
+                val selectedCurrency = spinnerCurrencies.selectedItem as MyCurrency
+                val listAccounts = myDbManager.fromAccountsByCurrency(selectedCurrency._id)
+                for (account in listAccounts){
+                    sum += myDbManager.getSumIncomeByCategory(category._id, account._id, initialDate, finalDate).roundToInt()
+                }
+            }
+            else{
+                sum +=  myDbManager.getSumIncomeByCategory(category._id, selectedAccount._id, initialDate, finalDate).roundToInt()
+            }
 
             if(sum > 0) { // Если сумма больше нуля добавить в список
                 val pieEntry = PieEntry(sum.toFloat(), category._name)
@@ -219,12 +234,15 @@ class IncomeFragment : Fragment() {
         val pieDataSet = PieDataSet(pieEntriesSelective, currentContext.resources.getString(R.string.categories))
         pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS, 255)
         pieDataSet.valueTextSize = 12f
-        pieDataSet.valueTextColor = Color.BLACK
 
         val pieData = PieData(pieDataSet)
         pieChart.data = pieData
 
         pieChart.legend.form = Legend.LegendForm.CIRCLE
+        when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK){
+            Configuration.UI_MODE_NIGHT_NO -> pieChart.legend.textColor = Color.BLACK
+            Configuration.UI_MODE_NIGHT_YES -> pieChart.legend.textColor = Color.WHITE
+        }
         pieChart.description.isEnabled = false
         pieChart.centerText = currentContext.resources.getString(R.string.income)
         pieChart.animateY(500)
@@ -298,5 +316,19 @@ class IncomeFragment : Fragment() {
         }
 
         createPieChart()
+    }
+
+    // Создание адаптера для списка счетов
+    private fun createAccountAdapter(){
+        val selectedCurrency = spinnerCurrencies.selectedItem as MyCurrency
+        val accountList: ArrayList<MyAccount> = arrayListOf(MyAccount(0, currentContext.resources.getString(R.string.allAccounts), 0, selectedCurrency._id))
+        accountList.addAll(myDbManager.fromAccountsByCurrency(selectedCurrency._id))
+        val adapterAccounts = ArrayAdapter(
+            currentContext,
+            R.layout.account_item,
+            R.id.textViewItemAccountName,
+            accountList
+        )
+        spinnerAccounts.adapter = adapterAccounts
     }
 }

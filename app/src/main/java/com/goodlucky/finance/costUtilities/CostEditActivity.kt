@@ -101,35 +101,55 @@ class CostEditActivity : AppCompatActivity() {
                     ).show()
                 }
                 R.id.buttonAddOrChangeCost ->{
-                    if (state == MyConstants.STATE_ADD) {
-                        val sum: Double = editTextCostSum.text.toString().toDouble()
-                        val comment: String = editTextCostComment.text.toString()
-                        val myAccount: MyAccount = spinnerAccounts.selectedItem as MyAccount
-                        val accountID = myAccount._id
-                        val myCategory: MyCategory = spinnerCategory.selectedItem as MyCategory
-                        val categoryID = myCategory._id
+                    var result = false
+                    try {
+                        if(editTextCostSum.text.toString().toDouble() > 0) result = true
+                    }catch (_: java.lang.Exception){
 
-                        val addCost = MyCost(0, sum, dateInSqliteformat, comment, accountID, categoryID)
-                        myDbManager.insertToCosts(addCost)
+                    }
+                    if(result) {
+                        if (state == MyConstants.STATE_ADD) {
+                            val sum: Double = editTextCostSum.text.toString().toDouble()
+                            val comment: String = editTextCostComment.text.toString()
+                            val myAccount: MyAccount = spinnerAccounts.selectedItem as MyAccount
+                            val accountID = myAccount._id
+                            val myCategory: MyCategory = spinnerCategory.selectedItem as MyCategory
+                            val categoryID = myCategory._id
 
-                        refreshFields()
+                            val addCost =
+                                MyCost(0, sum, dateInSqliteformat, comment, accountID, categoryID)
+                            myDbManager.insertToCosts(addCost)
 
-                        Toast.makeText(this, R.string.recordHaveAdded, Toast.LENGTH_SHORT).show()
+                            refreshFields()
+
+                            Toast.makeText(this, R.string.recordHaveAdded, Toast.LENGTH_SHORT)
+                                .show()
+                        } else {
+                            val sum: Double = editTextCostSum.text.toString().toDouble()
+                            val comment: String = editTextCostComment.text.toString()
+                            val myAccount: MyAccount = spinnerAccounts.selectedItem as MyAccount
+                            val accountID = myAccount._id
+                            val myCategory: MyCategory = spinnerCategory.selectedItem as MyCategory
+                            val categoryID = myCategory._id
+
+                            val changeCost = MyCost(
+                                receivedCost._id,
+                                sum,
+                                dateInSqliteformat,
+                                comment,
+                                accountID,
+                                categoryID
+                            )
+                            myDbManager.updateInCosts(changeCost)
+
+                            finish()
+
+                            Toast.makeText(this, R.string.recordHaveChanged, Toast.LENGTH_SHORT)
+                                .show()
+                        }
                     }
                     else{
-                        val sum: Double = editTextCostSum.text.toString().toDouble()
-                        val comment: String = editTextCostComment.text.toString()
-                        val myAccount: MyAccount = spinnerAccounts.selectedItem as MyAccount
-                        val accountID = myAccount._id
-                        val myCategory: MyCategory = spinnerCategory.selectedItem as MyCategory
-                        val categoryID = myCategory._id
-
-                        val changeCost = MyCost(receivedCost._id, sum, dateInSqliteformat, comment, accountID, categoryID)
-                        myDbManager.updateInCosts(changeCost)
-
-                        finish()
-
-                        Toast.makeText(this, R.string.recordHaveChanged, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@CostEditActivity, R.string.costSumWrongSum, Toast.LENGTH_SHORT).show()
                     }
                 }
                 R.id.buttonDeleteCostOrBack ->{

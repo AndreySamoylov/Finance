@@ -1,21 +1,30 @@
 package com.goodlucky.finance.accountUtilities
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.goodlucky.finance.R
+import com.goodlucky.finance.database.MyDbManager
 import com.goodlucky.finance.databinding.AccountItemBinding
 import com.goodlucky.finance.items.MyAccount
 
-class MyAccountAdapter(val listener: Listener) : RecyclerView.Adapter<MyAccountAdapter.MyAccountHolder>() {
+class MyAccountAdapter(val listener: Listener, val context: Context) : RecyclerView.Adapter<MyAccountAdapter.MyAccountHolder>() {
 
     val accountList = ArrayList<MyAccount>()
 
     class  MyAccountHolder(item : View) : RecyclerView.ViewHolder(item){
-        val binding = AccountItemBinding.bind(item)
+        private val binding = AccountItemBinding.bind(item)
+        private val myDbManager = MyDbManager(item.context)
+
         fun bind(myAccount: MyAccount, listener : Listener) = with(binding){
-            textViewItemAccountName.text = myAccount.name
+            myDbManager.openDatabase()
+            val bankName = myDbManager.getBankName(myAccount.idBank)
+            val currencyName = myDbManager.getCurrencyName(myAccount.idCurrency)
+            myDbManager.closeDatabase()
+            val accountText = "${myAccount.name} ($currencyName) $bankName"
+            textViewItemAccountName.text = accountText
             itemView.setOnClickListener{
                 listener.onAccountClick(myAccount)
             }

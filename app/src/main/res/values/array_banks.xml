@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="array_banks">
-        <item>ПАО Сбербанк</item>
-        <item>Банк ВТБ (ПАО)</item>
-        <item>Банк ГПБ (АО)</item>
-        <item>АО Россельхозбанк</item>
-        <item>АО Тинькофф Банк</item>
-        <item>ПАО Челябинвестбанк</item>
+        <item>Без банка</item>
+        <item>Сбербанк</item>
+        <item>Банк ВТБ</item>
+        <item>Банк ГПБ</item>
+        <item>Россельхозбанк</item>
+        <item>Тинькофф Банк</item>
+        <item>Челябинвестбанк</item>
     </string-array>
 </resources>

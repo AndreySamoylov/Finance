@@ -14,7 +14,6 @@
             android:id="@+id/buttonGoToEditCosts"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:text="@string/plus"
             android:textSize="48sp"
@@ -26,17 +25,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
             android:text="@string/allOperations"
+            android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Spinner
             android:id="@+id/fragmentCostSpinnerAccount"
-            android:layout_width="232dp"
-            android:layout_height="45dp"
+            android:layout_width="280dp"
+            android:layout_height="43dp"
+            android:layout_marginTop="16dp"
             android:contentDescription="@string/account"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.515"
+            app:layout_constraintStart_toEndOf="@+id/buttonGoToEditCosts"
             app:layout_constraintTop_toBottomOf="@+id/buttonGoToAllCostOperations" />
 
         <com.github.mikephil.charting.charts.PieChart
@@ -78,6 +80,18 @@
             app:layout_constraintStart_toEndOf="@+id/fragmentCostInitialDate"
             app:layout_constraintTop_toTopOf="@+id/fragmentCostInitialDate"
             app:layout_constraintVertical_bias="0.0" />
+
+        <Spinner
+            android:id="@+id/fragmentCostSpinnerCurrencies"
+            android:layout_width="0dp"
+            android:layout_height="43dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintEnd_toStartOf="@+id/buttonGoToAllCostOperations"
+            app:layout_constraintHorizontal_bias="0.385"
+            app:layout_constraintStart_toEndOf="@+id/buttonGoToEditCosts"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

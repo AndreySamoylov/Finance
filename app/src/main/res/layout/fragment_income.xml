@@ -14,7 +14,6 @@
             android:id="@+id/buttonGoToEditIncome"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:text="@string/plus"
             android:textSize="48sp"
@@ -25,19 +24,21 @@
             android:id="@+id/fragmentIncomebuttonGoToAllIncomeOperations"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginTop="16dp"
             android:text="@string/allOperations"
+            android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Spinner
             android:id="@+id/fragmentIncomeSpinnerAccount"
-            android:layout_width="232dp"
+            android:layout_width="280dp"
             android:layout_height="45dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="16dp"
             android:contentDescription="@string/account"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fragmentIncomebuttonGoToAllIncomeOperations" />
+            app:layout_constraintTop_toBottomOf="@+id/fragmentIncomeSpinnerCurrencies" />
 
         <com.github.mikephil.charting.charts.PieChart
             android:id="@+id/pieChartIncome"
@@ -78,5 +79,17 @@
             app:layout_constraintStart_toEndOf="@+id/fragmentIncomeInitialDate"
             app:layout_constraintTop_toTopOf="@+id/fragmentIncomeInitialDate"
             app:layout_constraintVertical_bias="0.0" />
+
+        <Spinner
+            android:id="@+id/fragmentIncomeSpinnerCurrencies"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintEnd_toStartOf="@+id/fragmentIncomebuttonGoToAllIncomeOperations"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/buttonGoToEditIncome"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

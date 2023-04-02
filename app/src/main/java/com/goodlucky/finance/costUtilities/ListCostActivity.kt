@@ -19,6 +19,7 @@ import com.goodlucky.finance.R
 import com.goodlucky.finance.database.MyDbManager
 import com.goodlucky.finance.items.MyAccount
 import com.goodlucky.finance.items.MyCost
+import com.goodlucky.finance.items.MyCurrency
 import java.util.Date
 import java.util.Calendar
 import kotlin.time.Duration.Companion.milliseconds
@@ -32,6 +33,7 @@ class ListCostActivity : AppCompatActivity(), MyCostAdapter.Listener {
     private lateinit var editTextFinalDateCost : EditText
     private lateinit var finalDate : String
     private lateinit var spinnerAccounts : Spinner
+    private lateinit var spinnerCurrencies : Spinner
 
     private lateinit var myDbManager : MyDbManager
 
@@ -48,6 +50,7 @@ class ListCostActivity : AppCompatActivity(), MyCostAdapter.Listener {
         editTextInitialDateCost = findViewById(R.id.editTextInitialDateCost)
         editTextFinalDateCost = findViewById(R.id.editTextFinalDateCost)
         spinnerAccounts = findViewById(R.id.spinnerAccountOnShowCost)
+        spinnerCurrencies = findViewById(R.id.ListCostSpinnerCurrencies)
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewCosts)
 
         // Создание слушателя нажатий
@@ -60,7 +63,7 @@ class ListCostActivity : AppCompatActivity(), MyCostAdapter.Listener {
                         dateAndTime.get(Calendar.MONTH),
                         dateAndTime.get(Calendar.DAY_OF_MONTH)
                     ).show()
-                    setRecycleViewAdaper()
+                    setRecycleViewAdapter()
                 }
                 R.id.editTextFinalDateCost ->{
                     DatePickerDialog(
@@ -69,7 +72,7 @@ class ListCostActivity : AppCompatActivity(), MyCostAdapter.Listener {
                         dateAndTime.get(Calendar.MONTH),
                         dateAndTime.get(Calendar.DAY_OF_MONTH)
                     ).show()
-                    setRecycleViewAdaper()
+                    setRecycleViewAdapter()
                 }
             }
         }
@@ -82,7 +85,17 @@ class ListCostActivity : AppCompatActivity(), MyCostAdapter.Listener {
 
         spinnerAccounts.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                setRecycleViewAdaper()
+                setRecycleViewAdapter()
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+
+            }
+        }
+        spinnerCurrencies.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                createAccountAdapter()
+                setRecycleViewAdapter()
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -92,16 +105,11 @@ class ListCostActivity : AppCompatActivity(), MyCostAdapter.Listener {
 
         myDbManager.openDatabase()
 
-        // Создание адаптера для волчка выбора счетов
-        val accountList : ArrayList<MyAccount> = arrayListOf(MyAccount(0, "Все счета", 0, 0))
-        accountList.addAll(myDbManager.fromAccounts)
-        val adapterAccounts = ArrayAdapter(
-            this,
-            R.layout.account_item,
-            R.id.textViewItemAccountName,
-            accountList
-        )
-        spinnerAccounts.adapter = adapterAccounts
+        // Создание адаптера списка валют
+        val adapterCurrency = ArrayAdapter(this@ListCostActivity, android.R.layout.simple_spinner_dropdown_item, myDbManager.fromCurrencies())
+        spinnerCurrencies.adapter = adapterCurrency
+
+        createAccountAdapter()
 
         // Инициализация календаря
         val calendar: Calendar = Calendar.getInstance()
@@ -128,13 +136,9 @@ class ListCostActivity : AppCompatActivity(), MyCostAdapter.Listener {
             else "${year}-${month}-01"
         }
 
-        // Установка текущей даты
-        setDateTimeFinal(calendar.timeInMillis)
-
-        // Установка в календарь первого дня текущего месяца
-        calendar.set(Calendar.DAY_OF_MONTH, 1)
-        // Установка первого числа текущего месяца
-        setDateTimeInitial(calendar.timeInMillis)
+        setDateTimeFinal(calendar.timeInMillis)    // Установка текущей даты
+        calendar.set(Calendar.DAY_OF_MONTH, 1)     // Установка в календарь первого дня текущего месяца
+        setDateTimeInitial(calendar.timeInMillis)  // Установка первого числа текущего месяца
 
         myDbManager.closeDatabase()
     }
@@ -143,7 +147,7 @@ class ListCostActivity : AppCompatActivity(), MyCostAdapter.Listener {
         super.onResume()
         myDbManager.openDatabase()
 
-        setRecycleViewAdaper()
+        setRecycleViewAdapter()
     }
 
     override fun onPause() {
@@ -203,7 +207,7 @@ class ListCostActivity : AppCompatActivity(), MyCostAdapter.Listener {
             else "${year}-${month}-${dayOfMonth}"
         }
 
-        setRecycleViewAdaper()
+        setRecycleViewAdapter()
     }
 
     private fun setDateTimeFinal(milliseconds : Long = 0) {
@@ -230,14 +234,38 @@ class ListCostActivity : AppCompatActivity(), MyCostAdapter.Listener {
             else "${year}-${month}-${dayOfMonth}"
         }
 
-        setRecycleViewAdaper()
+        setRecycleViewAdapter()
     }
 
-    private fun setRecycleViewAdaper(){
+    private fun setRecycleViewAdapter(){
         val account : MyAccount = spinnerAccounts.selectedItem as MyAccount
         //Если выбран элемент с id ноль (т.е все счета)), то вывести данные из всех счетов, иначе из выбранного
-        val list : List<MyCost> = if (account._id  == (0).toLong())  myDbManager.fromCosts(initialDate, finalDate)
-        else myDbManager.fromCosts(initialDate, finalDate, account._id)
+        val list : ArrayList<MyCost> = arrayListOf()
+        if (account._id  == (0).toLong()){
+            val selectedCurrency = spinnerCurrencies.selectedItem as MyCurrency
+            val listAccounts = myDbManager.fromAccountsByCurrency(selectedCurrency._id)
+            for (myAccount in listAccounts){
+                list.addAll(myDbManager.fromCosts(initialDate, finalDate, myAccount._id))
+            }
+        }
+        else{
+            list.addAll(myDbManager.fromCosts(initialDate, finalDate, account._id))
+        }
         adapter.addAllCostList(list)
+    }
+
+    // Создание адаптера для списка счетов
+    private fun createAccountAdapter(){
+        val selectedCurrency = spinnerCurrencies.selectedItem as MyCurrency
+        val accountList: java.util.ArrayList<MyAccount> = arrayListOf(MyAccount(0, this.resources.getString(R.string.allAccounts), 0, selectedCurrency._id))
+        accountList.addAll(myDbManager.fromAccountsByCurrency(selectedCurrency._id))
+
+        val adapterAccounts = ArrayAdapter(
+            this,
+            R.layout.account_item,
+            R.id.textViewItemAccountName,
+            accountList
+        )
+        spinnerAccounts.adapter = adapterAccounts
     }
 }

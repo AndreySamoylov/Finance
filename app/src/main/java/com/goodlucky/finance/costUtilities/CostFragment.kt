@@ -3,6 +3,7 @@ package com.goodlucky.finance.costUtilities
 import android.app.DatePickerDialog
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
 import android.text.format.DateUtils
@@ -22,6 +23,7 @@ import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.utils.ColorTemplate
+import com.goodlucky.finance.items.MyCurrency
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
@@ -33,6 +35,7 @@ class CostFragment : Fragment() {
     private lateinit var buttonGoToAllCostOperations: Button
     private lateinit var pieChart: PieChart
     private lateinit var spinnerAccounts : Spinner
+    private lateinit var spinnerCurrency : Spinner
     private lateinit var editTextInitialDateCost : EditText
     private lateinit var initialDate : String
     private lateinit var editTextFinalDateCost : EditText
@@ -63,6 +66,7 @@ class CostFragment : Fragment() {
         buttonGoToAllCostOperations = view.findViewById(R.id.buttonGoToAllCostOperations)
         pieChart = view.findViewById(R.id.pieChartCosts)
         spinnerAccounts = view.findViewById(R.id.fragmentCostSpinnerAccount)
+        spinnerCurrency = view.findViewById(R.id.fragmentCostSpinnerCurrencies)
         editTextInitialDateCost = view.findViewById(R.id.fragmentCostInitialDate)
         editTextFinalDateCost = view.findViewById(R.id.fragmentCostFinalDate)
 
@@ -80,6 +84,16 @@ class CostFragment : Fragment() {
         spinnerAccounts.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 createPieChart()
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+
+            }
+        }
+
+        spinnerCurrency.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                createAccountAdapter()
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -117,17 +131,11 @@ class CostFragment : Fragment() {
         super.onResume()
         myDbManager.openDatabase()
 
-        // Создание адаптера для волчка выбора счетов
-        val accountList: ArrayList<MyAccount> = arrayListOf(MyAccount(0, "Все счета", 0, 0))
-        accountList.addAll(myDbManager.fromAccounts)
+        // Создание адаптера списка валют
+        val adapterCurrency = ArrayAdapter(currentContext, android.R.layout.simple_spinner_dropdown_item, myDbManager.fromCurrencies())
+        spinnerCurrency.adapter = adapterCurrency
 
-        val adapterAccounts = ArrayAdapter(
-            currentContext,
-            R.layout.account_item,
-            R.id.textViewItemAccountName,
-            accountList
-        )
-        spinnerAccounts.adapter = adapterAccounts
+        createAccountAdapter()
 
         // Инициализация календаря
         val calendar: Calendar = Calendar.getInstance()
@@ -186,10 +194,19 @@ class CostFragment : Fragment() {
         var allSum = 0f // Сумма всех расходов
         val categoryList = myDbManager.fromCategories // Список категорий
         for (category in categoryList){
-            // Если выбран 1-ый элемент волчка, то есть нужно делать выборку из всех счетов
+            // Если выбран 1-ый элемент волчка, то есть нужно делать выборку из всех счетов в списке
             // Иначе сделать выборку из одного выбранного счёта
-            val sum = if (selectedAccount._id == (0).toLong()) myDbManager.getSumCostByCategory(category._id, initialDate, finalDate).roundToInt() // Сумма расхода по категории
-            else myDbManager.getSumCostByCategory(category._id, selectedAccount._id, initialDate, finalDate).roundToInt() // Сумма расхода по категории
+            var sum = 0
+            if (selectedAccount._id == (0).toLong()) {
+                val selectedCurrency = spinnerCurrency.selectedItem as MyCurrency
+                val listAccounts = myDbManager.fromAccountsByCurrency(selectedCurrency._id)
+                for (account in listAccounts){
+                    sum += myDbManager.getSumCostByCategory(category._id, account._id, initialDate, finalDate).roundToInt()
+                }
+            }
+            else{
+                sum +=  myDbManager.getSumCostByCategory(category._id, selectedAccount._id, initialDate, finalDate).roundToInt()
+            }
 
             if(sum > 0) { // Если сумма больше нуля добавить в список
                 val pieEntry = PieEntry(sum.toFloat(), category._name)
@@ -218,12 +235,15 @@ class CostFragment : Fragment() {
         val pieDataSet = PieDataSet(pieEntriesSelective, currentContext.resources.getString(R.string.categories))
         pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS, 255)
         pieDataSet.valueTextSize = 12f
-        pieDataSet.valueTextColor = Color.BLACK
 
         val pieData = PieData(pieDataSet)
         pieChart.data = pieData
 
         pieChart.legend.form = Legend.LegendForm.CIRCLE
+        when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK){
+            Configuration.UI_MODE_NIGHT_NO -> pieChart.legend.textColor = Color.BLACK
+            Configuration.UI_MODE_NIGHT_YES -> pieChart.legend.textColor = Color.WHITE
+        }
         pieChart.description.isEnabled = false
         pieChart.centerText = currentContext.resources.getString(R.string.cost)
         pieChart.animateY(500,)
@@ -297,5 +317,20 @@ class CostFragment : Fragment() {
         }
 
         createPieChart()
+    }
+
+    // Создание адаптера списка счетов
+    private fun createAccountAdapter(){
+        val selectedCurrency = spinnerCurrency.selectedItem as MyCurrency
+        val accountList: java.util.ArrayList<MyAccount> = arrayListOf(MyAccount(0, currentContext.resources.getString(R.string.allAccounts), 0, selectedCurrency._id))
+        accountList.addAll(myDbManager.fromAccountsByCurrency(selectedCurrency._id))
+
+        val adapterAccounts = ArrayAdapter(
+            currentContext,
+            R.layout.account_item,
+            R.id.textViewItemAccountName,
+            accountList
+        )
+        spinnerAccounts.adapter = adapterAccounts
     }
 }

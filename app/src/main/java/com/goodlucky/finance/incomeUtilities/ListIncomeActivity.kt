@@ -18,6 +18,7 @@ import com.goodlucky.finance.MyConstants
 import com.goodlucky.finance.R
 import com.goodlucky.finance.database.MyDbManager
 import com.goodlucky.finance.items.MyAccount
+import com.goodlucky.finance.items.MyCurrency
 import com.goodlucky.finance.items.MyIncome
 import java.util.*
 import kotlin.time.Duration.Companion.milliseconds
@@ -31,6 +32,7 @@ class ListIncomeActivity : AppCompatActivity(), MyIncomeAdapter.Listener {
     private lateinit var editTextFinalDateIncome : EditText
     private lateinit var finalDate : String
     private lateinit var spinnerAccounts : Spinner
+    private lateinit var spinnerCurrencies : Spinner
 
     private lateinit var myDbManager : MyDbManager
 
@@ -48,6 +50,7 @@ class ListIncomeActivity : AppCompatActivity(), MyIncomeAdapter.Listener {
         editTextInitialDateIncome = findViewById(R.id.editTextInitialDateIncome)
         editTextFinalDateIncome = findViewById(R.id.editTextFinalDateIncome)
         spinnerAccounts = findViewById(R.id.spinnerAccountOnShowIncome)
+        spinnerCurrencies = findViewById(R.id.listIncomeSpinnerCurrencies)
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewIncome)
 
         // Создание слушателя нажатий
@@ -90,18 +93,24 @@ class ListIncomeActivity : AppCompatActivity(), MyIncomeAdapter.Listener {
             }
         }
 
+        spinnerCurrencies.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                createAccountAdapter()
+                setRecycleViewAdaper()
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+
+            }
+        }
+
         myDbManager.openDatabase()
 
-        // Создание адаптера для волчка выбора счетов
-        val accountList : ArrayList<MyAccount> = arrayListOf(MyAccount(0, "Все счета",0,0))
-        accountList.addAll(myDbManager.fromAccounts)
-        val adapterAccounts = ArrayAdapter(
-            this,
-            R.layout.account_item,
-            R.id.textViewItemAccountName,
-            accountList
-        )
-        spinnerAccounts.adapter = adapterAccounts
+        // Создание адаптера списка валют
+        val adapterCurrency = ArrayAdapter(this@ListIncomeActivity, android.R.layout.simple_spinner_dropdown_item, myDbManager.fromCurrencies())
+        spinnerCurrencies.adapter = adapterCurrency
+
+        createAccountAdapter()
 
         // Инициализация календаря
         val calendar: Calendar = Calendar.getInstance()
@@ -236,8 +245,32 @@ class ListIncomeActivity : AppCompatActivity(), MyIncomeAdapter.Listener {
     private fun setRecycleViewAdaper(){
         val account : MyAccount = spinnerAccounts.selectedItem as MyAccount
         //Если выбран элемент с id ноль (т.е все счета)), то вывести данные из всех счетов, иначе из выбранного
-        val list : List<MyIncome> = if (account._id  == (0).toLong())  myDbManager.fromIncome(initialDate, finalDate)
-        else myDbManager.fromIncome(initialDate, finalDate, account._id)
+        val list : ArrayList<MyIncome> = arrayListOf()
+        if (account._id  == (0).toLong()){
+            val selectedCurrency = spinnerCurrencies.selectedItem as MyCurrency
+            val listAccounts = myDbManager.fromAccountsByCurrency(selectedCurrency._id)
+            for (myAccount in listAccounts){
+                list.addAll(myDbManager.fromIncome(initialDate, finalDate, myAccount._id))
+            }
+        }
+        else{
+            list.addAll(myDbManager.fromIncome(initialDate, finalDate, account._id))
+        }
         adapter.addAllIncomeList(list)
+    }
+
+    // Создание адаптера для списка счетов
+    private fun createAccountAdapter(){
+        val selectedCurrency = spinnerCurrencies.selectedItem as MyCurrency
+        val accountList: ArrayList<MyAccount> = arrayListOf(MyAccount(0, this.resources.getString(R.string.allAccounts), 0, selectedCurrency._id))
+        accountList.addAll(myDbManager.fromAccountsByCurrency(selectedCurrency._id))
+
+        val adapterAccounts = ArrayAdapter(
+            this,
+            R.layout.account_item,
+            R.id.textViewItemAccountName,
+            accountList
+        )
+        spinnerAccounts.adapter = adapterAccounts
     }
 }

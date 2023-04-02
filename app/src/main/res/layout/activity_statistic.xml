@@ -6,56 +6,62 @@
     android:layout_height="match_parent"
     tools:context=".statistics.StatisticActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/statisticRecyclerView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/statisticsMainResultText" />
-
-    <Spinner
-        android:id="@+id/statisticsSpinnerAccounts"
-        android:layout_width="0dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="32dp"
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="430dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="4dp"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Spinner
+            android:id="@+id/statisticsSpinnerAccounts"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="2"
+            android:contentDescription="@string/account" />
+
+        <Spinner
+            android:id="@+id/statisticsSpinnerCurrencies"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="2"
+            android:contentDescription="@string/account" />
+    </LinearLayout>
 
     <EditText
         android:id="@+id/statisticsInitialDate"
         android:layout_width="160dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="16dp"
         android:ems="10"
         android:focusable="auto"
         android:focusableInTouchMode="false"
-        android:inputType="textPersonName"
+        android:inputType="date"
+        android:minHeight="48dp"
         android:text="@string/initialDate"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/statisticsSpinnerAccounts" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        tools:ignore="TextFields" />
 
     <EditText
         android:id="@+id/statisticsFinalDate"
         android:layout_width="160dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="52dp"
         android:ems="10"
         android:focusable="auto"
         android:focusableInTouchMode="false"
-        android:inputType="textPersonName"
+        android:inputType="date"
+        android:minHeight="48dp"
         android:text="@string/finalDate"
+        app:layout_constraintBottom_toBottomOf="@+id/statisticsInitialDate"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/statisticsSpinnerAccounts" />
+        app:layout_constraintTop_toTopOf="@+id/statisticsInitialDate" />
 
     <TextView
         android:id="@+id/statisticsMainResultText"
@@ -70,4 +76,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/statisticsInitialDate" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/statisticRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/statisticsMainResultText" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

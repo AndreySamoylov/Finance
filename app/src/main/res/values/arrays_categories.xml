@@ -5,6 +5,7 @@
         <item name="supermarkets">@drawable/supermarket</item>
         <item name="homeAndRepair">@drawable/home_and_repair</item>
         <item name="clothesAndBoots">@drawable/clothes</item>
+        <item name="services">@drawable/services</item>
         <item name="fastFood">@drawable/burger</item>
         <item name="entertainments">@drawable/entertainments</item>
         <item name="rest">@drawable/sofa</item>
@@ -35,12 +36,13 @@
         <item name="percents">@drawable/percent</item>
     </integer-array>
 
-    <!--Категории, которые будут добавленны по умолчанию-->
+    <!--Категории расходов, которые будут добавленны по умолчанию-->
     <!--Важно чтобы названиб соответствовала картинка-->
     <string-array name="default_categories_cost_names">
         <item name="supermarkets">Супермаркеты</item>
         <item name="homeAndRepair">Дом и ремонт</item>
         <item name="clothesAndBoots">Одежда и обувь</item>
+        <item name="services">Жилищно-коммунальные</item>
         <item name="fastFood">Фастфуд</item>
         <item name="entertainments">Развлечения</item>
         <item name="rest">Отдых</item>
@@ -67,6 +69,7 @@
         <item name="supermarkets">@drawable/supermarket</item>
         <item name="homeAndRepair">@drawable/home_and_repair</item>
         <item name="clothesAndBoots">@drawable/clothes</item>
+        <item name="services">@drawable/services</item>
         <item name="fastFood">@drawable/burger</item>
         <item name="entertainments">@drawable/entertainments</item>
         <item name="rest">@drawable/sofa</item>
@@ -90,7 +93,7 @@
         <item name="translations">@drawable/translation</item>
     </integer-array>
 
-    <!--Категории, которые будут добавленны по умолчанию-->
+    <!--Категории доходов, которые будут добавленны по умолчанию-->
     <!--Важно чтобы названиб соответствовала картинка-->
     <string-array name="default_categories_income_names">
         <item name="salary">Зарплата</item>

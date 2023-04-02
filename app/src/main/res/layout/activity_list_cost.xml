@@ -8,10 +8,10 @@
 
     <Spinner
         android:id="@+id/spinnerAccountOnShowCost"
-        android:layout_width="330dp"
+        android:layout_width="250dp"
         android:layout_height="50dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="5dp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -56,4 +56,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextInitialDateCost" />
+
+    <Spinner
+        android:id="@+id/ListCostSpinnerCurrencies"
+        android:layout_width="120dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/spinnerAccountOnShowCost"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/spinnerAccountOnShowCost"
+        app:layout_constraintTop_toTopOf="@+id/spinnerAccountOnShowCost" />
 </androidx.constraintlayout.widget.ConstraintLayout>

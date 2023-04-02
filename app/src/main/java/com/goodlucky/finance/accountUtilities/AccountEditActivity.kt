@@ -3,18 +3,15 @@ package com.goodlucky.finance.accountUtilities
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
-import android.widget.Adapter
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Button
-import android.widget.SpinnerAdapter
+import android.widget.Toast
 import com.goodlucky.finance.MyFunction.getSerializable
 import com.goodlucky.finance.MyConstants
-import com.goodlucky.finance.MySpinnerImageWithTextArrayAdapter
 import com.goodlucky.finance.R
 import com.goodlucky.finance.database.MyDbManager
 import com.goodlucky.finance.databinding.ActivityAccountEditBinding
-import com.goodlucky.finance.databinding.ActivityCategoryEditBinding
 import com.goodlucky.finance.items.MyAccount
 import com.goodlucky.finance.items.MyBank
 import com.goodlucky.finance.items.MyCurrency
@@ -57,19 +54,35 @@ class AccountEditActivity : AppCompatActivity() {
 
         //Нажатие на кнопку ОК, в зависимости от состояние - state, либо добавляет, либо изменять данные
         buttonOkAccount.setOnClickListener {
-            if (state == MyConstants.STATE_ADD){
-                val selectedBank = binding.AccountEditActivitySpinnerBank.selectedItem as MyBank
-                val selectedCurrency = binding.AccountEditActivitySpinnerCurrency.selectedItem as MyCurrency
-                val account = MyAccount(0, editTextAccountName.text.toString(), selectedBank._id, selectedCurrency._id)
-                myDbManager.insertToAccounts(account)
+            if (editTextAccountName.text.toString().length >= 3) {
+                if (state == MyConstants.STATE_ADD) {
+                    val selectedBank = binding.AccountEditActivitySpinnerBank.selectedItem as MyBank
+                    val selectedCurrency =
+                        binding.AccountEditActivitySpinnerCurrency.selectedItem as MyCurrency
+                    val account = MyAccount(
+                        0,
+                        editTextAccountName.text.toString(),
+                        selectedBank._id,
+                        selectedCurrency._id
+                    )
+                    myDbManager.insertToAccounts(account)
+                } else if (state == MyConstants.STATE_CHANGE_OR_DELETE) {
+                    val selectedBank = binding.AccountEditActivitySpinnerBank.selectedItem as MyBank
+                    val selectedCurrency =
+                        binding.AccountEditActivitySpinnerCurrency.selectedItem as MyCurrency
+                    val account = MyAccount(
+                        receivedAccount._id,
+                        editTextAccountName.text.toString(),
+                        selectedBank._id,
+                        selectedCurrency._id
+                    )
+                    myDbManager.updateInAccounts(account)
+                }
+                finish()
             }
-            else if (state == MyConstants.STATE_CHANGE_OR_DELETE){
-                val selectedBank = binding.AccountEditActivitySpinnerBank.selectedItem as MyBank
-                val selectedCurrency = binding.AccountEditActivitySpinnerCurrency.selectedItem as MyCurrency
-                val account = MyAccount(0, editTextAccountName.text.toString(), selectedBank._id, selectedCurrency._id)
-                myDbManager.updateInAccounts(account)
+            else{
+                Toast.makeText(this@AccountEditActivity, R.string.accountTextFewLenght, Toast.LENGTH_SHORT).show()
             }
-            finish()
         }
 
         // Нажатие на кнопку отмена, в зависимости от состояние - state, либо закрывает страницу,

@@ -2,7 +2,7 @@ package com.goodlucky.finance.database
 
 object MyDatabaseConstants{
     const val DB_NAME = "finance.db"
-    const val DB_VERSION = 35
+    const val DB_VERSION = 36
 
     //Таблица чеки
     const val TABLE_RECEIPTS = "receipts"
