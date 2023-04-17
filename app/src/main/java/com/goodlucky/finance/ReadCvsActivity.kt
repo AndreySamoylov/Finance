@@ -1,8 +1,8 @@
 package com.goodlucky.finance
 
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.view.MenuItem
 import android.widget.ArrayAdapter
@@ -10,12 +10,15 @@ import android.widget.Button
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import com.goodlucky.finance.database.MyDbManager
 import com.goodlucky.finance.items.MyAccount
 import com.goodlucky.finance.items.MyCategory
 import com.goodlucky.finance.items.MyCost
 import com.goodlucky.finance.items.MyIncome
 import java.io.BufferedReader
+import java.io.File
+import java.io.FileWriter
 import java.io.InputStream
 import java.nio.charset.Charset
 
@@ -71,10 +74,9 @@ class ReadCvsActivity : AppCompatActivity() {
 
     private val getContent =  registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         // Handle the returned Uri
-        var inputStream: InputStream?
+        val inputStream: InputStream?
         try{
             inputStream = uri?.let { applicationContext.contentResolver.openInputStream(it) }
-                //uri.let { applicationContext.contentResolver.openInputStream(it) }
         }catch (exception : NullPointerException){
             Log.d("ReadCvsActivity", exception.toString())
             return@registerForActivityResult

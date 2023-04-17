@@ -101,11 +101,11 @@ class AccountEditActivity : AppCompatActivity() {
 
         //Создание адаптеров
         val listBank = myDbManager.fromBanks()
-        val spinnerBanksAdapter = ArrayAdapter(this, androidx.transition.R.layout.support_simple_spinner_dropdown_item, listBank)
+        val spinnerBanksAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, listBank)
         binding.AccountEditActivitySpinnerBank.adapter = spinnerBanksAdapter
 
         val listCurrency = myDbManager.fromCurrencies()
-        val spinnerCurrencyAdapter = ArrayAdapter(this, androidx.transition.R.layout.support_simple_spinner_dropdown_item, listCurrency)
+        val spinnerCurrencyAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, listCurrency)
         binding.AccountEditActivitySpinnerCurrency.adapter = spinnerCurrencyAdapter
     }
 

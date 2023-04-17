@@ -289,11 +289,6 @@ class CostEditActivity : AppCompatActivity() {
                 Toast.LENGTH_LONG
             ).show()
 
-            //Добавление чека в базу данных
-            val receipt = MyReceipt(0, result.contents)
-            myDbManager.insertToReceipt(receipt)
-
-
             //Обработка строки
             //Получение даты
             val calendar: Calendar = Calendar.getInstance()
@@ -319,6 +314,11 @@ class CostEditActivity : AppCompatActivity() {
 
             val sum = result.contents.substring(sIndex + 2, pointIndex + 3)
             editTextCostSum.setText(sum)
+
+            //Добавление чека в базу данных
+            val date = "${year}-${month}-${dayOfMonth}"
+            val receipt = MyReceipt(0, result.contents, date, sum.toDouble())
+            myDbManager.insertToReceipt(receipt)
         }
     }
 }

@@ -22,6 +22,7 @@ import com.goodlucky.finance.database.MyDbManager
 import com.goodlucky.finance.firebase.MyFirebaseUserData
 import com.goodlucky.finance.incomeUtilities.IncomeFragment
 import com.goodlucky.finance.items.*
+import com.goodlucky.finance.receipts.ReceiptActivity
 import com.goodlucky.finance.settings.SettingsActivity
 import com.goodlucky.finance.statistics.StatisticActivity
 import com.google.android.material.navigation.NavigationView
@@ -89,10 +90,11 @@ class MainActivity : AppCompatActivity() {
                     startActivity(intent)
                 }
                 R.id.item_receipts -> {
-                    Toast.makeText(this, "Чеки", Toast.LENGTH_SHORT ).show()
+                    val intent = Intent(this@MainActivity, ReceiptActivity::class.java)
+                    startActivity(intent)
                 }
                 R.id.item_save_data_to_server -> {
-                    val dialogClickListener = DialogInterface.OnClickListener { dialog, which ->
+                    val dialogClickListener = DialogInterface.OnClickListener { _, which ->
                         when (which) {
                             DialogInterface.BUTTON_POSITIVE -> saveDataToServer()
                             DialogInterface.BUTTON_NEGATIVE -> {}
@@ -106,7 +108,7 @@ class MainActivity : AppCompatActivity() {
                         .show()
                 }
                 R.id.item_load_data_from_server -> {
-                    val dialogClickListener = DialogInterface.OnClickListener { dialog, which ->
+                    val dialogClickListener = DialogInterface.OnClickListener { _, which ->
                             when (which) {
                                 DialogInterface.BUTTON_POSITIVE -> loadDataFromServer()
                                 DialogInterface.BUTTON_NEGATIVE -> {}

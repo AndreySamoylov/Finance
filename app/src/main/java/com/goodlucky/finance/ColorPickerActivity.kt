@@ -105,11 +105,11 @@ class ColorPickerActivity : AppCompatActivity() {
     private fun getColorString(): String {
         binding.apply {
             var r = Integer.toHexString(((255 * colorR.progress) / colorR.max))
-            if (r.length == 1) r = "0" + r
+            if (r.length == 1) r = "0$r"
             var g = Integer.toHexString(((255 * colorG.progress) / colorG.max))
-            if (g.length == 1) g = "0" + g
+            if (g.length == 1) g = "0$g"
             var b = Integer.toHexString(((255 * colorB.progress) / colorB.max))
-            if(b.length==1) b = "0"+b
+            if (b.length == 1) b = "0$b"
             return "#${r}${g}${b}"
         }
     }

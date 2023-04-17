@@ -1,7 +1,6 @@
 package com.goodlucky.finance.settings
 
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.goodlucky.finance.R

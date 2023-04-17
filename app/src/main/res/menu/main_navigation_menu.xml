@@ -10,7 +10,7 @@
     <item android:title="">
         <menu>
             <item android:id="@+id/item_statistics" android:title="@string/statistics" android:icon="@drawable/baseline_query_stats_24"/>
-            <item android:id="@+id/item_receipts" android:title="@string/receipts" android:icon="@drawable/baseline_qr_code_24"/>
+            <item android:id="@+id/item_receipts" android:title="@string/receiptsCheak" android:icon="@drawable/baseline_qr_code_24"/>
         </menu>
     </item>
     <item android:title="">

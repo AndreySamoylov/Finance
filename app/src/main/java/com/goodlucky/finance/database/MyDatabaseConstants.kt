@@ -2,15 +2,19 @@ package com.goodlucky.finance.database
 
 object MyDatabaseConstants{
     const val DB_NAME = "finance.db"
-    const val DB_VERSION = 36
+    const val DB_VERSION = 37
 
     //Таблица чеки
     const val TABLE_RECEIPTS = "receipts"
     const val ID_RECEIPT = "_id"
     const val CODE_RECEIPT = "code"
+    const val DATE_RECEIPT = "date"
+    const val SUM_RECEIPT = "sum"
     const val TABLE_RECEIPTS_CREATE = "CREATE TABLE IF NOT EXISTS " + TABLE_RECEIPTS +
             " (" + ID_RECEIPT + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            CODE_RECEIPT + " TEXT UNIQUE NOT NULL);"
+            CODE_RECEIPT + " TEXT UNIQUE NOT NULL," +
+            DATE_RECEIPT + " TEXT UNIQUE NOT NULL," +
+            SUM_RECEIPT + " REAL NOT NULL);"
     const val TABLE_RECEIPTS_DROP = "DROP TABLE IF EXISTS $TABLE_RECEIPTS;"
 
     //Таблица валюты

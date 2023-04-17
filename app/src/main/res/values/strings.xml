@@ -84,7 +84,7 @@
     <!-- Заголовки для элементов меню-->
     <string name="enterAccount">Войти в аккаунт</string>
     <string name="statistics">Статистика</string>
-    <string name="receipts">Чеки</string>
+    <string name="receiptsCheak">Проверка чеков</string>
     <string name="saveDataToServer">Сохранить данные на сервер</string>
     <string name="loadDataFromServer">Загрузить данные c сервера</string>
     <string name="readFromCvsFile">Чтение из CVS файла</string>
@@ -100,4 +100,19 @@
     <string name="night">Тёмная</string>
 
     <string name="textStatisticsResult">Доходы: + \nРасходы: - \nИтого </string>
+
+    <!--Получение информации по чеку-->
+    <string name="phoneNumber">Номер телефона</string>
+    <string name="sendPhoneNumber">Отправить</string>
+    <string name="cheakYourPhone">Проверьте телефон</string>
+    <string name="verifyCode">Код подтверждения</string>
+    <string name="sendVerifyCode">Отправить</string>
+    <string name="verifyCodeSended">Код подтверждения отправлен</string>
+    <string name="Barcode">Код чека</string>
+    <string name="getBarcodeInformation">Получить данные</string>
+    <string name="qrcodeSample1">t=20200727T174700&amp;s=746.00&amp;fn=9285000100206366&amp;i=34929&amp;fp=3951774668&amp;n=1</string>
+
+    <!--logs-->
+    <string name="ReadCvsActivity">ReadCvsActivity</string>
+
 </resources>

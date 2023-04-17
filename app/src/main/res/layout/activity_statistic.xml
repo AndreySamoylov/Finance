@@ -47,7 +47,8 @@
         android:text="@string/initialDate"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-        tools:ignore="TextFields" />
+        tools:ignore="TextFields"
+        android:autofillHints="" />
 
     <EditText
         android:id="@+id/statisticsFinalDate"

@@ -84,12 +84,6 @@ class MyDbHelper(context: Context?) :
             sqLiteDatabase.insert(MyDatabaseConstants.TABLE_CURRENCIES, null, contentValues)
         }
 
-        //Добавление чека
-//        val contentValuesReceipt = ContentValues()
-//        contentValuesReceipt.put(MyDatabaseConstants.ID_RECEIPT, 0)
-//        contentValuesReceipt.put(MyDatabaseConstants.CODE_RECEIPT, "Я чек")
-//        sqLiteDatabase.insert(MyDatabaseConstants.TABLE_RECEIPTS, null, contentValuesReceipt)
-
         listCategoryCostImages?.recycle()
         listCategoryIncomeImages?.recycle()
     }

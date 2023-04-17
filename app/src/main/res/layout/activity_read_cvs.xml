@@ -21,12 +21,14 @@
 
     <Spinner
         android:id="@+id/spinnerAccountsCvsReader"
-        android:layout_width="406dp"
+        android:layout_width="0dp"
         android:layout_height="66dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="40dp"
         android:layout_marginEnd="32dp"
+        android:contentDescription="@string/account"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

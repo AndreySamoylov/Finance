@@ -1,7 +1,6 @@
 package com.goodlucky.finance.statistics
 
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -11,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.goodlucky.finance.MyConstants
 import com.goodlucky.finance.R
 import com.goodlucky.finance.databinding.CategoryStatisticItemBinding
-import com.goodlucky.finance.items.MyCategory
 import com.goodlucky.finance.items.MyCategoryWithSum
 import java.text.DecimalFormat
 

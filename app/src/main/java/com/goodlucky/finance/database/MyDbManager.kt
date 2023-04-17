@@ -22,6 +22,8 @@ class MyDbManager(context: Context) {
     fun insertToReceipt(receipt: MyReceipt){
         val contentValues = ContentValues()
         contentValues.put(MyDatabaseConstants.CODE_RECEIPT, receipt.code)
+        contentValues.put(MyDatabaseConstants.DATE_RECEIPT, receipt.date)
+        contentValues.put(MyDatabaseConstants.SUM_RECEIPT, receipt.sum)
         sqLiteDatabase!!.insert(MyDatabaseConstants.TABLE_RECEIPTS, null, contentValues)
     }
 
@@ -29,6 +31,8 @@ class MyDbManager(context: Context) {
         val contentValues = ContentValues()
         contentValues.put(MyDatabaseConstants.ID_RECEIPT, receipt._id)
         contentValues.put(MyDatabaseConstants.CODE_RECEIPT, receipt.code)
+        contentValues.put(MyDatabaseConstants.DATE_RECEIPT, receipt.date)
+        contentValues.put(MyDatabaseConstants.SUM_RECEIPT, receipt.sum)
         sqLiteDatabase!!.insert(MyDatabaseConstants.TABLE_RECEIPTS, null, contentValues)
     }
 
@@ -55,12 +59,35 @@ class MyDbManager(context: Context) {
         while (cursor.moveToNext()) {
             @SuppressLint("Range") val id = cursor.getLong(cursor.getColumnIndex(MyDatabaseConstants.ID_RECEIPT))
             @SuppressLint("Range") val code = cursor.getString(cursor.getColumnIndex(MyDatabaseConstants.CODE_RECEIPT))
-            val receipt = MyReceipt(id, code)
+            @SuppressLint("Range") val date = cursor.getString(cursor.getColumnIndex(MyDatabaseConstants.DATE_RECEIPT))
+            @SuppressLint("Range") val sum = cursor.getDouble(cursor.getColumnIndex(MyDatabaseConstants.SUM_RECEIPT))
+            val receipt = MyReceipt(id, code, date, sum)
             tempList.add(receipt)
         }
         cursor.close()
         return tempList
     }
+
+    fun fromReceipts(initialDate : String, finalDate : String) : List<MyReceipt>{
+        val tempList: MutableList<MyReceipt> = ArrayList()
+        val selection = "${MyDatabaseConstants.DATE_RECEIPT} >= ? AND ${MyDatabaseConstants.DATE_RECEIPT} <= ?"
+        val selectionArgs = arrayOf(initialDate, finalDate)
+
+        val cursor = sqLiteDatabase!!.query(
+            MyDatabaseConstants.TABLE_RECEIPTS,null,selection,selectionArgs,null,null,null)
+        while (cursor.moveToNext()) {
+            @SuppressLint("Range") val id = cursor.getLong(cursor.getColumnIndex(MyDatabaseConstants.ID_RECEIPT))
+            @SuppressLint("Range") val code = cursor.getString(cursor.getColumnIndex(MyDatabaseConstants.CODE_RECEIPT))
+            @SuppressLint("Range") val date = cursor.getString(cursor.getColumnIndex(MyDatabaseConstants.DATE_RECEIPT))
+            @SuppressLint("Range") val sum = cursor.getDouble(cursor.getColumnIndex(MyDatabaseConstants.SUM_RECEIPT))
+            val receipt = MyReceipt(id, code, date, sum)
+            tempList.add(receipt)
+        }
+        cursor.close()
+        return tempList
+    }
+
+
 
     fun insertToBanksWithId(bank: MyBank){
         val contentValues = ContentValues()
