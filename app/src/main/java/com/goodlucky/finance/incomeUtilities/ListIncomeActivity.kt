@@ -58,21 +58,19 @@ class ListIncomeActivity : AppCompatActivity(), MyIncomeAdapter.Listener {
             when (view.id) {
                 R.id.editTextInitialDateIncome -> {
                     DatePickerDialog(
-                        this@ListIncomeActivity, dateListenerDateFrom,
+                        this@ListIncomeActivity, dateListenerInitialDate,
                         dateAndTime.get(Calendar.YEAR),
                         dateAndTime.get(Calendar.MONTH),
                         dateAndTime.get(Calendar.DAY_OF_MONTH)
                     ).show()
-                    setRecycleViewAdaper()
                 }
                 R.id.editTextFinalDateIncome -> {
                     DatePickerDialog(
-                        this@ListIncomeActivity, dateListenerDateBefore,
+                        this@ListIncomeActivity, dateListenerFinalDate,
                         dateAndTime.get(Calendar.YEAR),
                         dateAndTime.get(Calendar.MONTH),
                         dateAndTime.get(Calendar.DAY_OF_MONTH)
                     ).show()
-                    setRecycleViewAdaper()
                 }
             }
         }
@@ -85,7 +83,7 @@ class ListIncomeActivity : AppCompatActivity(), MyIncomeAdapter.Listener {
 
         spinnerAccounts.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                setRecycleViewAdaper()
+                setRecycleViewAdapter()
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -96,7 +94,7 @@ class ListIncomeActivity : AppCompatActivity(), MyIncomeAdapter.Listener {
         spinnerCurrencies.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 createAccountAdapter()
-                setRecycleViewAdaper()
+                setRecycleViewAdapter()
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -110,40 +108,19 @@ class ListIncomeActivity : AppCompatActivity(), MyIncomeAdapter.Listener {
         val adapterCurrency = ArrayAdapter(this@ListIncomeActivity, android.R.layout.simple_spinner_dropdown_item, myDbManager.fromCurrencies())
         spinnerCurrencies.adapter = adapterCurrency
 
-        createAccountAdapter()
 
         // Инициализация календаря
         val calendar: Calendar = Calendar.getInstance()
         calendar.timeInMillis = Date().time.milliseconds.inWholeMilliseconds
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
-        val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
-
-        //Приведение даты в формат YYYY-MM-DD
-        // Установить сегодняшную дату в переменную
-        initialDate = if (month < 10) {
-            if (dayOfMonth < 10) "${year}-0${month}-0${dayOfMonth}"
-            else "${year}-0${month}-${dayOfMonth}"
-        } else {
-            if (dayOfMonth < 10) "${year}-${month}-0${dayOfMonth}"
-            else "${year}-${month}-${dayOfMonth}"
-        }
-        // Установить первое число текущего мемяца
-        finalDate = if (month < 10) {
-            if (dayOfMonth < 10) "${year}-0${month}-01"
-            else "${year}-0${month}-01"
-        } else {
-            if (dayOfMonth < 10) "${year}-${month}-01"
-            else "${year}-${month}-01"
-        }
-
         // Установка текущей даты
-        setDateTimeFinal(calendar.timeInMillis)
-
+        setDateTime(calendar.timeInMillis, editTextFinalDateIncome, false, isSetRecyclerViewAdapter = false)
         // Установка в календарь первого дня текущего месяца
         calendar.set(Calendar.DAY_OF_MONTH, 1)
         // Установка первого числа текущего месяца
-        setDateTimeInitial(calendar.timeInMillis)
+        setDateTime(calendar.timeInMillis, editTextInitialDateIncome, true, isSetRecyclerViewAdapter = false)
+
+        createCurrencyAdapter()
+        createAccountAdapter()
 
         myDbManager.closeDatabase()
     }
@@ -158,8 +135,6 @@ class ListIncomeActivity : AppCompatActivity(), MyIncomeAdapter.Listener {
     override fun onResume() {
         super.onResume()
         myDbManager.openDatabase()
-
-        setRecycleViewAdaper()
     }
 
     override fun onPause() {
@@ -172,30 +147,28 @@ class ListIncomeActivity : AppCompatActivity(), MyIncomeAdapter.Listener {
         return super.onOptionsItemSelected(item)
     }
 
-    // Обработчик события для выбора даты "от которой нужно считать"
-    private var dateListenerDateFrom = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+    // Обработчик события для выбора начальной даты
+    private var dateListenerInitialDate = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
         dateAndTime[Calendar.YEAR] = year
         dateAndTime[Calendar.MONTH] = monthOfYear
         dateAndTime[Calendar.DAY_OF_MONTH] = dayOfMonth
-        setDateTimeInitial(dateAndTime.timeInMillis)
+        setDateTime(dateAndTime.timeInMillis, editTextInitialDateIncome, true)
     }
 
-    // Обработчик события для выбора даты "до которой нужно считать"
-    private var dateListenerDateBefore = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+    // Обработчик события для выбора конечной даты
+    private var dateListenerFinalDate = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
         dateAndTime[Calendar.YEAR] = year
         dateAndTime[Calendar.MONTH] = monthOfYear
         dateAndTime[Calendar.DAY_OF_MONTH] = dayOfMonth
-        setDateTimeFinal(dateAndTime.timeInMillis)
+        setDateTime(dateAndTime.timeInMillis, editTextFinalDateIncome, false)
     }
 
-    private fun setDateTimeInitial(milliseconds : Long = 0) {
-        editTextInitialDateIncome.setText(
+    private fun setDateTime(milliseconds : Long = 0, editText : EditText, isInitial : Boolean, isSetRecyclerViewAdapter : Boolean = true) {
+        editText.setText(
             DateUtils.formatDateTime(
                 this,
                 milliseconds,
-                DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_YEAR
-            )
-        )
+                DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_YEAR))
 
         val calendar: Calendar = Calendar.getInstance()
         calendar.timeInMillis = milliseconds
@@ -203,46 +176,30 @@ class ListIncomeActivity : AppCompatActivity(), MyIncomeAdapter.Listener {
         val month = calendar.get(Calendar.MONTH) + 1
         val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
 
-        //Приведение даты в формат YYYY-MM-DD
-        initialDate = if (month < 10) {
-            if (dayOfMonth < 10) "${year}-0${month}-0${dayOfMonth}"
-            else "${year}-0${month}-${dayOfMonth}"
-        } else {
-            if (dayOfMonth < 10) "${year}-${month}-0${dayOfMonth}"
-            else "${year}-${month}-${dayOfMonth}"
+        if (isInitial){
+            initialDate = if (month < 10) {//Приведение даты в формат YYYY-MM-DD
+                if (dayOfMonth < 10) "${year}-0${month}-0${dayOfMonth}"
+                else "${year}-0${month}-${dayOfMonth}"
+            } else {
+                if (dayOfMonth < 10) "${year}-${month}-0${dayOfMonth}"
+                else "${year}-${month}-${dayOfMonth}"
+            }
+        }
+        else{
+            finalDate = if (month < 10) {
+                if (dayOfMonth < 10) "${year}-0${month}-0${dayOfMonth}"
+                else "${year}-0${month}-${dayOfMonth}"
+            } else {
+                if (dayOfMonth < 10) "${year}-${month}-0${dayOfMonth}"
+                else "${year}-${month}-${dayOfMonth}"
+            }
         }
 
-        setRecycleViewAdaper()
+        if (isSetRecyclerViewAdapter) setRecycleViewAdapter()
     }
 
-    private fun setDateTimeFinal(milliseconds : Long = 0) {
-        editTextFinalDateIncome.setText(
-            DateUtils.formatDateTime(
-                this,
-                milliseconds,
-                DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_YEAR
-            )
-        )
-
-        val calendar: Calendar = Calendar.getInstance()
-        calendar.timeInMillis = milliseconds
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH) + 1
-        val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
-
-        //Приведение даты в формат YYYY-MM-DD
-        finalDate = if (month < 10) {
-            if (dayOfMonth < 10) "${year}-0${month}-0${dayOfMonth}"
-            else "${year}-0${month}-${dayOfMonth}"
-        } else {
-            if (dayOfMonth < 10) "${year}-${month}-0${dayOfMonth}"
-            else "${year}-${month}-${dayOfMonth}"
-        }
-
-        setRecycleViewAdaper()
-    }
-
-    private fun setRecycleViewAdaper(){
+    // Создание адаптера для списка операций
+    private fun setRecycleViewAdapter(){
         val account : MyAccount = spinnerAccounts.selectedItem as MyAccount
         //Если выбран элемент с id ноль (т.е все счета)), то вывести данные из всех счетов, иначе из выбранного
         val list : ArrayList<MyIncome> = arrayListOf()
@@ -258,7 +215,11 @@ class ListIncomeActivity : AppCompatActivity(), MyIncomeAdapter.Listener {
         }
         adapter.addAllIncomeList(list)
     }
-
+    // Создание адаптера списка валют
+    private fun createCurrencyAdapter(){
+        val adapterCurrency = ArrayAdapter(this@ListIncomeActivity, android.R.layout.simple_spinner_dropdown_item, myDbManager.fromCurrencies())
+        spinnerCurrencies.adapter = adapterCurrency
+    }
     // Создание адаптера для списка счетов
     private fun createAccountAdapter(){
         val selectedCurrency = spinnerCurrencies.selectedItem as MyCurrency

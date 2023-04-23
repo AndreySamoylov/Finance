@@ -24,6 +24,9 @@ class MyDbManager(context: Context) {
         contentValues.put(MyDatabaseConstants.CODE_RECEIPT, receipt.code)
         contentValues.put(MyDatabaseConstants.DATE_RECEIPT, receipt.date)
         contentValues.put(MyDatabaseConstants.SUM_RECEIPT, receipt.sum)
+        contentValues.put(MyDatabaseConstants.ITEMS_RECEIPT, receipt.items)
+        contentValues.put(MyDatabaseConstants.RETAIL_PLACE_RECEIPT, receipt.retailPlace)
+        contentValues.put(MyDatabaseConstants.RETAIL_PLACE_ADDRESS_RECEIPT, receipt.retailPlaceAddress)
         sqLiteDatabase!!.insert(MyDatabaseConstants.TABLE_RECEIPTS, null, contentValues)
     }
 
@@ -33,12 +36,21 @@ class MyDbManager(context: Context) {
         contentValues.put(MyDatabaseConstants.CODE_RECEIPT, receipt.code)
         contentValues.put(MyDatabaseConstants.DATE_RECEIPT, receipt.date)
         contentValues.put(MyDatabaseConstants.SUM_RECEIPT, receipt.sum)
+        contentValues.put(MyDatabaseConstants.ITEMS_RECEIPT, receipt.items)
+        contentValues.put(MyDatabaseConstants.RETAIL_PLACE_RECEIPT, receipt.retailPlace)
+        contentValues.put(MyDatabaseConstants.RETAIL_PLACE_ADDRESS_RECEIPT, receipt.retailPlaceAddress)
         sqLiteDatabase!!.insert(MyDatabaseConstants.TABLE_RECEIPTS, null, contentValues)
     }
 
     fun updateInReceipts(receipt: MyReceipt) {
         val values = ContentValues().apply {
+            put(MyDatabaseConstants.ID_RECEIPT, receipt._id)
             put(MyDatabaseConstants.CODE_RECEIPT, receipt.code)
+            put(MyDatabaseConstants.DATE_RECEIPT, receipt.date)
+            put(MyDatabaseConstants.SUM_RECEIPT, receipt.sum)
+            put(MyDatabaseConstants.ITEMS_RECEIPT, receipt.items)
+            put(MyDatabaseConstants.RETAIL_PLACE_RECEIPT, receipt.retailPlace)
+            put(MyDatabaseConstants.RETAIL_PLACE_ADDRESS_RECEIPT, receipt.retailPlaceAddress)
         }
         val selection = "${MyDatabaseConstants.ID_RECEIPT} = ?"
         val selectionArgs = arrayOf(receipt._id.toString())
@@ -61,7 +73,10 @@ class MyDbManager(context: Context) {
             @SuppressLint("Range") val code = cursor.getString(cursor.getColumnIndex(MyDatabaseConstants.CODE_RECEIPT))
             @SuppressLint("Range") val date = cursor.getString(cursor.getColumnIndex(MyDatabaseConstants.DATE_RECEIPT))
             @SuppressLint("Range") val sum = cursor.getDouble(cursor.getColumnIndex(MyDatabaseConstants.SUM_RECEIPT))
-            val receipt = MyReceipt(id, code, date, sum)
+            @SuppressLint("Range") val items = cursor.getString(cursor.getColumnIndex(MyDatabaseConstants.ITEMS_RECEIPT))
+            @SuppressLint("Range") val retailPlace = cursor.getString(cursor.getColumnIndex(MyDatabaseConstants.RETAIL_PLACE_RECEIPT))
+            @SuppressLint("Range") val retailPlaceAddress = cursor.getString(cursor.getColumnIndex(MyDatabaseConstants.RETAIL_PLACE_ADDRESS_RECEIPT))
+            val receipt = MyReceipt(id, code, date, sum, items, retailPlace, retailPlaceAddress)
             tempList.add(receipt)
         }
         cursor.close()
@@ -80,8 +95,10 @@ class MyDbManager(context: Context) {
             @SuppressLint("Range") val code = cursor.getString(cursor.getColumnIndex(MyDatabaseConstants.CODE_RECEIPT))
             @SuppressLint("Range") val date = cursor.getString(cursor.getColumnIndex(MyDatabaseConstants.DATE_RECEIPT))
             @SuppressLint("Range") val sum = cursor.getDouble(cursor.getColumnIndex(MyDatabaseConstants.SUM_RECEIPT))
-            val receipt = MyReceipt(id, code, date, sum)
-            tempList.add(receipt)
+            @SuppressLint("Range") val items = cursor.getString(cursor.getColumnIndex(MyDatabaseConstants.ITEMS_RECEIPT))
+            @SuppressLint("Range") val retailPlace = cursor.getString(cursor.getColumnIndex(MyDatabaseConstants.RETAIL_PLACE_RECEIPT))
+            @SuppressLint("Range") val retailPlaceAddress = cursor.getString(cursor.getColumnIndex(MyDatabaseConstants.RETAIL_PLACE_ADDRESS_RECEIPT))
+            val receipt = MyReceipt(id, code, date, sum, items, retailPlace, retailPlaceAddress)
         }
         cursor.close()
         return tempList

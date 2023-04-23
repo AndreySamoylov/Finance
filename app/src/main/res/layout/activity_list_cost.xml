@@ -6,64 +6,78 @@
     android:layout_height="match_parent"
     tools:context=".costUtilities.ListCostActivity">
 
-    <Spinner
-        android:id="@+id/spinnerAccountOnShowCost"
-        android:layout_width="250dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="5dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/editTextInitialDateCost"
-        android:layout_width="150dp"
-        android:layout_height="47dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
-        android:ems="10"
-        android:focusableInTouchMode="false"
-        android:hint="@string/initialDate"
-        android:inputType="date|textPersonName"
-        app:layout_constraintBottom_toBottomOf="@+id/editTextFinalDateCost"
-        app:layout_constraintEnd_toStartOf="@+id/editTextFinalDateCost"
-        app:layout_constraintHorizontal_bias="0.032"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerAccountOnShowCost" />
-
-    <EditText
-        android:id="@+id/editTextFinalDateCost"
-        android:layout_width="150dp"
-        android:layout_height="47dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="10dp"
-        android:ems="10"
-        android:focusableInTouchMode="false"
-        android:hint="@string/finalDate"
-        android:inputType="date|textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerAccountOnShowCost" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewCosts"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="3dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="3dp"
-        android:layout_marginBottom="3dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextInitialDateCost" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout7" />
 
-    <Spinner
-        android:id="@+id/ListCostSpinnerCurrencies"
-        android:layout_width="120dp"
-        android:layout_height="50dp"
-        android:layout_marginEnd="10dp"
-        app:layout_constraintBottom_toBottomOf="@+id/spinnerAccountOnShowCost"
+    <LinearLayout
+        android:id="@+id/linearLayout6"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/spinnerAccountOnShowCost"
-        app:layout_constraintTop_toTopOf="@+id/spinnerAccountOnShowCost" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Spinner
+            android:id="@+id/spinnerAccountOnShowCost"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1.5"
+            android:contentDescription="@string/chooseAccount" />
+
+        <Spinner
+            android:id="@+id/ListCostSpinnerCurrencies"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1.15"
+            android:contentDescription="@string/chooseCurrency" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout7"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout6"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout6"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout6">
+
+        <EditText
+            android:id="@+id/editTextInitialDateCost"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:ems="10"
+            android:focusableInTouchMode="false"
+            android:hint="@string/initialDate"
+            android:inputType="date|textPersonName"
+            android:autofillHints="" />
+
+        <EditText
+            android:id="@+id/editTextFinalDateCost"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:ems="10"
+            android:focusableInTouchMode="false"
+            android:hint="@string/finalDate"
+            android:inputType="date|textPersonName"
+            android:autofillHints="" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

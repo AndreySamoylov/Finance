@@ -43,6 +43,7 @@ class CategoryFragment : Fragment(), MyCategoryAdapter.Listener {
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycleviewCategories)
         recyclerView.layoutManager = GridLayoutManager(view.context, 3)
         recyclerView.adapter = adapter
+
         radioButtonCategoryCost  = view.findViewById(R.id.radioButtonShowCategoryCost)
 
         view.findViewById<Button>(R.id.buttonGoToEditCategory).setOnClickListener {
@@ -53,7 +54,7 @@ class CategoryFragment : Fragment(), MyCategoryAdapter.Listener {
 
         radioButtonCategoryCost.setOnCheckedChangeListener { _, isChecked ->
             // Если выбрана радиокнопка "расход"
-            // Иначе выбрана кнопка "доход"
+            // Иначе выбрана радиокнопка "доход"
             if (isChecked){
                 val list : List<MyCategory> = myDbManager.fromCategories(MyConstants.CATEGORY_TYPE_COST)
                 adapter.addAllCategoryList(list)

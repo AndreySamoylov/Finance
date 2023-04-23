@@ -2,7 +2,7 @@ package com.goodlucky.finance.database
 
 object MyDatabaseConstants{
     const val DB_NAME = "finance.db"
-    const val DB_VERSION = 37
+    const val DB_VERSION = 40
 
     //Таблица чеки
     const val TABLE_RECEIPTS = "receipts"
@@ -10,11 +10,17 @@ object MyDatabaseConstants{
     const val CODE_RECEIPT = "code"
     const val DATE_RECEIPT = "date"
     const val SUM_RECEIPT = "sum"
+    const val ITEMS_RECEIPT = "items"
+    const val RETAIL_PLACE_RECEIPT = "retailPlace"
+    const val RETAIL_PLACE_ADDRESS_RECEIPT = "retailPlaceAddress"
     const val TABLE_RECEIPTS_CREATE = "CREATE TABLE IF NOT EXISTS " + TABLE_RECEIPTS +
             " (" + ID_RECEIPT + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             CODE_RECEIPT + " TEXT UNIQUE NOT NULL," +
-            DATE_RECEIPT + " TEXT UNIQUE NOT NULL," +
-            SUM_RECEIPT + " REAL NOT NULL);"
+            DATE_RECEIPT + " TEXT NOT NULL," +
+            SUM_RECEIPT + " REAL NOT NULL," +
+            ITEMS_RECEIPT + " TEXT," +
+            RETAIL_PLACE_RECEIPT + " TEXT," +
+            RETAIL_PLACE_ADDRESS_RECEIPT + " TEXT);"
     const val TABLE_RECEIPTS_DROP = "DROP TABLE IF EXISTS $TABLE_RECEIPTS;"
 
     //Таблица валюты
@@ -27,7 +33,7 @@ object MyDatabaseConstants{
             " (" + ID_CURRENCY + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             NAME_CURRENCY + " TEXT UNIQUE NOT NULL," +
             NAME_SHORT_CURRENCY + " TEXT UNIQUE NOT NULL," +
-            EXCHANGE_RATE_CURRENCY + " INTEGER);"
+            EXCHANGE_RATE_CURRENCY + " REAL);"
     const val TABLE_CURRENCIES_DROP = "DROP TABLE IF EXISTS $TABLE_CURRENCIES;"
 
     //Таблица банки

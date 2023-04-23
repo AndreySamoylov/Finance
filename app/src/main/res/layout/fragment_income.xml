@@ -10,86 +10,111 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/buttonGoToEditIncome"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/plus"
-            android:textSize="48sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/fragmentIncomebuttonGoToAllIncomeOperations"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/allOperations"
-            android:textSize="12sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <Spinner
             android:id="@+id/fragmentIncomeSpinnerAccount"
-            android:layout_width="280dp"
-            android:layout_height="45dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="16dp"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
             android:contentDescription="@string/account"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fragmentIncomeSpinnerCurrencies" />
+            app:layout_constraintEnd_toEndOf="@+id/linearLayout9"
+            app:layout_constraintStart_toStartOf="@+id/linearLayout9"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout9" />
 
         <com.github.mikephil.charting.charts.PieChart
             android:id="@+id/pieChartIncome"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fragmentIncomeInitialDate">
+            app:layout_constraintTop_toBottomOf="@+id/fragmentIncomeSpinnerAccount">
 
         </com.github.mikephil.charting.charts.PieChart>
 
-        <EditText
-            android:id="@+id/fragmentIncomeInitialDate"
-            android:layout_width="160dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="40dp"
-            android:ems="10"
-            android:focusableInTouchMode="false"
-            android:hint="@string/initialDate"
-            android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/buttonGoToEditIncome" />
-
-        <EditText
-            android:id="@+id/fragmentIncomeFinalDate"
-            android:layout_width="160dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:ems="10"
-            android:focusableInTouchMode="false"
-            android:hint="@string/finalDate"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="@+id/fragmentIncomeInitialDate"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.758"
-            app:layout_constraintStart_toEndOf="@+id/fragmentIncomeInitialDate"
-            app:layout_constraintTop_toTopOf="@+id/fragmentIncomeInitialDate"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <Spinner
-            android:id="@+id/fragmentIncomeSpinnerCurrencies"
+        <LinearLayout
+            android:id="@+id/fragmentIncomeLinearLayoutMainButton"
             android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="4dp"
-            app:layout_constraintEnd_toStartOf="@+id/fragmentIncomebuttonGoToAllIncomeOperations"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/buttonGoToEditIncome"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="100dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <Button
+                android:id="@+id/buttonGoToEditIncome"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="0.7"
+                android:text="@string/add"
+                android:textSize="16sp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/fragmentIncomebuttonGoToAllIncomeOperations"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_weight="1"
+                    android:text="@string/allOperations"
+                    android:textSize="12sp" />
+
+                <Spinner
+                    android:id="@+id/fragmentIncomeSpinnerCurrencies"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:contentDescription="@string/chooseCurrency" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout9"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="@+id/fragmentIncomeLinearLayoutMainButton"
+            app:layout_constraintStart_toStartOf="@+id/fragmentIncomeLinearLayoutMainButton"
+            app:layout_constraintTop_toBottomOf="@+id/fragmentIncomeLinearLayoutMainButton">
+
+            <EditText
+                android:id="@+id/fragmentIncomeInitialDate"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:ems="10"
+                android:focusableInTouchMode="false"
+                android:hint="@string/initialDate"
+                android:inputType="date"
+                android:textSize="14sp"
+                android:autofillHints="" />
+
+            <EditText
+                android:id="@+id/fragmentIncomeFinalDate"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:ems="10"
+                android:focusableInTouchMode="false"
+                android:hint="@string/finalDate"
+                android:inputType="date"
+                android:textSize="14sp"
+                android:autofillHints="" />
+        </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

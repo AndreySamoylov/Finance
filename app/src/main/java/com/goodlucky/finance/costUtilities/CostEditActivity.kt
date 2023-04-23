@@ -292,12 +292,14 @@ class CostEditActivity : AppCompatActivity() {
             //Обработка строки
             //Получение даты
             val calendar: Calendar = Calendar.getInstance()
-            val year = result.contents.substring(2, 6).toInt()
-            val month = result.contents.substring(6, 8).toInt()
-            val dayOfMonth = result.contents.substring(8, 10).toInt()
-            calendar.set(Calendar.YEAR, year)
-            calendar.set(Calendar.DAY_OF_MONTH, month - 1)
-            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+            val year = result.contents.substring(2, 6)
+            val month = result.contents.substring(6, 8)
+            val dayOfMonth = result.contents.substring(8, 10)
+            val hour = result.contents.substring(11, 13)
+            val minute = result.contents.substring(13, 15)
+            calendar.set(Calendar.YEAR, year.toInt())
+            calendar.set(Calendar.MONTH, month.toInt() - 1)
+            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth.toInt())
             setDateTime(calendar.timeInMillis)
 
             // Получение суммы
@@ -316,8 +318,8 @@ class CostEditActivity : AppCompatActivity() {
             editTextCostSum.setText(sum)
 
             //Добавление чека в базу данных
-            val date = "${year}-${month}-${dayOfMonth}"
-            val receipt = MyReceipt(0, result.contents, date, sum.toDouble())
+            val date = "${year}-${month}-${dayOfMonth} ${hour}:${minute}"
+            val receipt = MyReceipt(0, result.contents, date, sum.toDouble(),  "", "", "")
             myDbManager.insertToReceipt(receipt)
         }
     }

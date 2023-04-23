@@ -61,6 +61,7 @@ data class Receipt(
     @SerializedName("operator") val operator : String,
     @SerializedName("receiptCode")  val receiptCode : Int,
     @SerializedName("requestNumber") val requestNumber : Int,
+    @SerializedName("retailPlace") val retailPlace : String,
     @SerializedName("retailPlaceAddress") val retailPlaceAddress : String,
     @SerializedName("senderAddress") val senderAddress : String,
     @SerializedName("shiftNumber") val shiftNumber : Int,
@@ -72,6 +73,7 @@ data class Receipt(
 
 data class Item(
     @SerializedName("name") val name : String,
+    @SerializedName("ndsSum") val ndsSum : Double,
     @SerializedName("price") val price : Double,
     @SerializedName("quantity") val quantity : Int,
     @SerializedName("sum") val sum : Double

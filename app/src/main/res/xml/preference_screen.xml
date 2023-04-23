@@ -9,4 +9,12 @@
         android:title="@string/theme"
         app:summaryOff="@string/light"
         app:summaryOn="@string/night" />
+    <PreferenceCategory android:title="@string/advanced">
+
+    </PreferenceCategory>
+    <EditTextPreference
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/phoneNumber"
+        app:key="@string/phoneNumber" />
 </PreferenceScreen>

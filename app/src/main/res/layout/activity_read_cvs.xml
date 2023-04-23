@@ -8,24 +8,21 @@
 
     <Button
         android:id="@+id/buttonReadCvsFile"
-        android:layout_width="129dp"
+        android:layout_width="0dp"
         android:layout_height="50dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="16dp"
         android:text="@string/read"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.464"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerAccountsCvsReader"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintEnd_toEndOf="@+id/spinnerAccountsCvsReader"
+        app:layout_constraintStart_toStartOf="@+id/spinnerAccountsCvsReader"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerAccountsCvsReader" />
 
     <Spinner
         android:id="@+id/spinnerAccountsCvsReader"
         android:layout_width="0dp"
         android:layout_height="66dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
         android:contentDescription="@string/account"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

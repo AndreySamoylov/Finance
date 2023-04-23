@@ -9,7 +9,7 @@
     <Spinner
         android:id="@+id/receiptsSpinnerReceipt"
         android:layout_width="0dp"
-        android:layout_height="68dp"
+        android:layout_height="40dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
@@ -32,8 +32,7 @@
     <LinearLayout
         android:id="@+id/linearLayoutPhoneNumber"
         android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_margin="4dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="@+id/receiptsBarcode"
@@ -44,17 +43,20 @@
             android:id="@+id/receiptsPhoneNumber"
             android:layout_width="0dp"
             android:layout_height="50dp"
+            android:layout_marginEnd="8dp"
             android:layout_weight="1.6"
             android:ems="10"
             android:hint="@string/phoneNumber"
-            android:inputType="textPersonName" />
+            android:inputType="phone" />
 
         <Button
             android:id="@+id/receiptsButtonSendPhoneNumber"
             android:layout_width="0dp"
             android:layout_height="50dp"
+            android:layout_marginEnd="8dp"
             android:layout_weight="1"
-            android:text="@string/sendPhoneNumber" />
+            android:text="@string/sendPhoneNumber"
+            android:textSize="12sp" />
 
         <ImageView
             android:id="@+id/receiptsImagePhoneNumberStatus"
@@ -66,8 +68,7 @@
     <LinearLayout
         android:id="@+id/linearLayoutVerifyCode"
         android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_margin="4dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="@+id/linearLayoutPhoneNumber"
@@ -78,6 +79,7 @@
             android:id="@+id/receiptsVerifyCode"
             android:layout_width="0dp"
             android:layout_height="50dp"
+            android:layout_marginEnd="8dp"
             android:layout_weight="1.6"
             android:ems="10"
             android:hint="@string/verifyCode"
@@ -87,8 +89,10 @@
             android:id="@+id/receiptsButtonSendVerifyCode"
             android:layout_width="0dp"
             android:layout_height="50dp"
+            android:layout_marginEnd="8dp"
             android:layout_weight="1"
-            android:text="@string/sendVerifyCode" />
+            android:text="@string/sendVerifyCode"
+            android:textSize="12sp" />
 
         <ImageView
             android:id="@+id/receiptsImageVerifyCodeStatus"
@@ -107,10 +111,14 @@
         app:layout_constraintStart_toStartOf="@+id/linearLayoutVerifyCode"
         app:layout_constraintTop_toBottomOf="@+id/linearLayoutVerifyCode" />
 
-    <TextView
-        android:id="@+id/receiptsTextViewResult"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/receiptsRecycleView"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

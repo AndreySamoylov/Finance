@@ -6,31 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".accountUtilities.AccountEditActivity">
 
-    <Button
-        android:id="@+id/buttonOkAccount"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/add"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/buttonCancelAccount"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/cancel"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
     <EditText
         android:id="@+id/editTextAccountName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="24dp"
         android:autofillHints=""
         android:ems="10"
         android:hint="@string/inputName"
@@ -42,11 +22,11 @@
 
     <Spinner
         android:id="@+id/AccountEditActivitySpinnerBank"
-        android:layout_width="320dp"
+        android:layout_width="0dp"
         android:layout_height="48dp"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="100dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="16dp"
         android:contentDescription="@string/chooseBank"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.258"
@@ -57,10 +37,40 @@
         android:id="@+id/AccountEditActivitySpinnerCurrency"
         android:layout_width="0dp"
         android:layout_height="48dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="24dp"
         android:contentDescription="@string/chooseCurrency"
         app:layout_constraintEnd_toEndOf="@+id/AccountEditActivitySpinnerBank"
         app:layout_constraintStart_toStartOf="@+id/AccountEditActivitySpinnerBank"
         app:layout_constraintTop_toBottomOf="@+id/AccountEditActivitySpinnerBank" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:layout_margin="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/buttonOkAccount"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginRight="16dp"
+            android:layout_weight="1"
+            android:text="@string/add"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/buttonCancelAccount"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_weight="1"
+            android:text="@string/cancel"
+            android:textSize="16sp" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

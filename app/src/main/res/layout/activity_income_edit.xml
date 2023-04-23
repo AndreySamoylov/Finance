@@ -6,107 +6,40 @@
     android:layout_height="match_parent"
     tools:context=".incomeUtilities.IncomeEditActivity">
 
-    <Button
-        android:id="@+id/buttonAddOrChangeIncome"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:text="@string/add"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/buttonDeleteIncomeOrBack"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:text="@string/cancel"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
     <EditText
         android:id="@+id/editTextIncomeSum"
         android:layout_width="0dp"
         android:layout_height="50dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginTop="8dp"
         android:autofillHints=""
         android:ems="10"
         android:hint="@string/inputSum"
         android:inputType="numberDecimal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.524"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/spinnerEditCategoryIncome"
+        app:layout_constraintStart_toStartOf="@+id/spinnerEditCategoryIncome"
         app:layout_constraintTop_toBottomOf="@+id/spinnerEditCategoryIncome" />
-
-    <Button
-        android:id="@+id/buttonChangeDateIncome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="@string/changeDate"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.455"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonYesterdayIncome" />
-
-    <Button
-        android:id="@+id/buttonDayBeforeYesterdayIncome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:text="@string/dayBeforeYesterday"
-        app:layout_constraintBottom_toBottomOf="@+id/buttonYesterdayIncome"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.159"
-        app:layout_constraintStart_toEndOf="@+id/buttonYesterdayIncome"
-        app:layout_constraintTop_toTopOf="@+id/buttonYesterdayIncome"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <Button
-        android:id="@+id/buttonTodayIncome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="28dp"
-        android:text="@string/today"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextDateIncome" />
-
-    <Button
-        android:id="@+id/buttonYesterdayIncome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="@string/yesterday"
-        app:layout_constraintBottom_toBottomOf="@+id/buttonTodayIncome"
-        app:layout_constraintStart_toEndOf="@+id/buttonTodayIncome"
-        app:layout_constraintTop_toBottomOf="@+id/editTextDateIncome"
-        app:layout_constraintVertical_bias="1.0" />
 
     <EditText
         android:id="@+id/editTextDateIncome"
         android:layout_width="0dp"
         android:layout_height="50dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginTop="8dp"
         android:autofillHints=""
         android:focusable="auto"
         android:focusableInTouchMode="false"
         android:hint="@string/inputDate"
         android:inputType="date"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.508"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/editTextIncomeSum"
+        app:layout_constraintStart_toStartOf="@+id/editTextIncomeSum"
         app:layout_constraintTop_toBottomOf="@+id/editTextIncomeSum" />
 
     <Spinner
         android:id="@+id/spinnerEditAccountIncome"
         android:layout_width="0dp"
         android:layout_height="50dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:contentDescription="@string/account"
         android:prompt="@string/chooseAccount"
         app:layout_constraintEnd_toEndOf="parent"
@@ -115,35 +48,107 @@
 
     <Spinner
         android:id="@+id/spinnerEditCategoryIncome"
-        android:layout_width="391dp"
-        android:layout_height="65dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="10dp"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
         android:contentDescription="@string/category"
         android:dropDownWidth="match_parent"
         android:prompt="@string/chooseCategory"
         android:spinnerMode="dialog"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.474"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/spinnerEditAccountIncome"
+        app:layout_constraintStart_toStartOf="@+id/spinnerEditAccountIncome"
         app:layout_constraintTop_toBottomOf="@+id/spinnerEditAccountIncome" />
 
     <EditText
         android:id="@+id/editTextIncomeComment"
         android:layout_width="0dp"
-        android:layout_height="70dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="10dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="@string/inputComment"
         android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout10"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout10"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout10" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout8"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="@+id/editTextDateIncome"
+        app:layout_constraintStart_toStartOf="@+id/editTextDateIncome"
+        app:layout_constraintTop_toBottomOf="@+id/editTextDateIncome">
+
+        <Button
+            android:id="@+id/buttonTodayIncome"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:text="@string/today" />
+
+        <Button
+            android:id="@+id/buttonDayBeforeYesterdayIncome"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/dayBeforeYesterday" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout10"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout8"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout8"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout8">
+
+        <Button
+            android:id="@+id/buttonYesterdayIncome"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:text="@string/yesterday" />
+
+        <Button
+            android:id="@+id/buttonChangeDateIncome"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            android:text="@string/changeDate" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginBottom="1dp"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.516"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonChangeDateIncome"
-        app:layout_constraintVertical_bias="0.136" />
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/buttonAddOrChangeIncome"
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:text="@string/add"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/buttonDeleteIncomeOrBack"
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            android:layout_weight="1"
+            android:text="@string/cancel"
+            android:textSize="16sp" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

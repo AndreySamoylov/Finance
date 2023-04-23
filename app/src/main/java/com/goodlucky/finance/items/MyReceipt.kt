@@ -7,10 +7,23 @@ data class MyReceipt(
     val _id: Long,
     val code: String,
     val date : String,
-    val sum : Double)  : Serializable {
-    constructor() : this(0, "", "", 0.0)
+    val sum : Double,
+    // То что появиться после сканирования
+    val items : String, // Что куплено?
+    val retailPlace : String, // Название места
+    val retailPlaceAddress : String, // Адрес места
+    )  : Serializable {
+    constructor() : this(
+        0,
+        "",
+        "",
+        0.0,
+        "",
+        "",
+        "",
+    )
 
     override fun toString(): String {
-        return code
+        return "$date \t $sum"
     }
 }

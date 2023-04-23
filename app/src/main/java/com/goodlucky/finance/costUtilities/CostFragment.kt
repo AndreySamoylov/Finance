@@ -101,12 +101,12 @@ class CostFragment : Fragment() {
             }
         }
 
-        // Создание слушателя нажатий
-        val onEditTextClickListener = View.OnClickListener { view ->
-            when (view.id) {
+        // Создание слушателя нажатий на текстовые поля
+        val onEditTextClickListener = View.OnClickListener { mainView ->
+            when (mainView.id) {
                 R.id.fragmentCostInitialDate -> {
                     DatePickerDialog(
-                        currentContext, dateListenerDateFrom,
+                        currentContext, dateListenerInitialDate,
                         dateAndTime.get(Calendar.YEAR),
                         dateAndTime.get(Calendar.MONTH),
                         dateAndTime.get(Calendar.DAY_OF_MONTH)
@@ -114,7 +114,7 @@ class CostFragment : Fragment() {
                 }
                 R.id.fragmentCostFinalDate -> {
                     DatePickerDialog(
-                        currentContext, dateListenerDateBefore,
+                        currentContext, dateListenerFinalDate,
                         dateAndTime.get(Calendar.YEAR),
                         dateAndTime.get(Calendar.MONTH),
                         dateAndTime.get(Calendar.DAY_OF_MONTH)
@@ -122,7 +122,7 @@ class CostFragment : Fragment() {
                 }
             }
         }
-        //Назначение слушателя для текстовых полей
+        // Назначение слушателя для текстовых полей
         editTextInitialDateCost.setOnClickListener(onEditTextClickListener)
         editTextFinalDateCost.setOnClickListener(onEditTextClickListener)
     }
@@ -131,44 +131,19 @@ class CostFragment : Fragment() {
         super.onResume()
         myDbManager.openDatabase()
 
-        // Создание адаптера списка валют
-        val adapterCurrency = ArrayAdapter(currentContext, android.R.layout.simple_spinner_dropdown_item, myDbManager.fromCurrencies())
-        spinnerCurrency.adapter = adapterCurrency
-
-        createAccountAdapter()
-
         // Инициализация календаря
         val calendar: Calendar = Calendar.getInstance()
         calendar.timeInMillis = Date().time.milliseconds.inWholeMilliseconds
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
-        val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
-
-        //Приведение даты в формат YYYY-MM-DD
-        // Установить сегодняшную дату в переменную
-        initialDate = if (month < 10) {
-            if (dayOfMonth < 10) "${year}-0${month}-0${dayOfMonth}"
-            else "${year}-0${month}-${dayOfMonth}"
-        } else {
-            if (dayOfMonth < 10) "${year}-${month}-0${dayOfMonth}"
-            else "${year}-${month}-${dayOfMonth}"
-        }
-        // Установить первое число текущего мемяца
-        finalDate = if (month < 10) {
-            if (dayOfMonth < 10) "${year}-0${month}-01"
-            else "${year}-0${month}-01"
-        } else {
-            if (dayOfMonth < 10) "${year}-${month}-01"
-            else "${year}-${month}-01"
-        }
 
         // Установка текущей даты
-        setDateTimeFinal(calendar.timeInMillis)
-
+        setDateTime(calendar.timeInMillis, editTextFinalDateCost, false, isCreateChart = false)
         // Установка в календарь первого дня текущего месяца
         calendar.set(Calendar.DAY_OF_MONTH, 1)
         // Установка первого числа текущего месяца
-        setDateTimeInitial(calendar.timeInMillis)
+        setDateTime(calendar.timeInMillis, editTextInitialDateCost, true, isCreateChart = false)
+
+        createCurrencyAdapter()
+        createAccountAdapter()
     }
 
     override fun onPause() {
@@ -181,10 +156,11 @@ class CostFragment : Fragment() {
         fun newInstance() = CostFragment()
     }
 
+    // Метод создаёт круговую диаграмму
     private fun createPieChart(){
         lateinit var selectedAccount : MyAccount
         try{
-            selectedAccount = spinnerAccounts.selectedItem as MyAccount // Выбранные счёт
+            selectedAccount = spinnerAccounts.selectedItem as MyAccount // Выбранный счёт
         }catch (exception : NullPointerException){
             Log.d("CostFragment", exception.toString())
             return
@@ -246,33 +222,36 @@ class CostFragment : Fragment() {
         }
         pieChart.description.isEnabled = false
         pieChart.centerText = currentContext.resources.getString(R.string.cost)
-        pieChart.animateY(500,)
+        pieChart.animateX(500)
+        pieChart.animateX(500)
     }
 
-    // Обработчик события для выбора даты "от которой нужно считать"
-    private var dateListenerDateFrom = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+    // Обработчик события для выбора начальной даты
+    private var dateListenerInitialDate = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
         dateAndTime[Calendar.YEAR] = year
         dateAndTime[Calendar.MONTH] = monthOfYear
         dateAndTime[Calendar.DAY_OF_MONTH] = dayOfMonth
-        setDateTimeInitial(dateAndTime.timeInMillis)
+        setDateTime(dateAndTime.timeInMillis, editTextInitialDateCost, true)
     }
 
-    // Обработчик события для выбора даты "до которой нужно считать"
-    private var dateListenerDateBefore = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+    // Обработчик события для выбора конечной даты
+    private var dateListenerFinalDate = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
         dateAndTime[Calendar.YEAR] = year
         dateAndTime[Calendar.MONTH] = monthOfYear
         dateAndTime[Calendar.DAY_OF_MONTH] = dayOfMonth
-        setDateTimeFinal(dateAndTime.timeInMillis)
+        setDateTime(dateAndTime.timeInMillis, editTextFinalDateCost, false)
     }
 
-    private fun setDateTimeInitial(milliseconds : Long = 0) {
-        editTextInitialDateCost.setText(
-            DateUtils.formatDateTime(
+    /*Метод устанавливает дату в текстовое поле, где milliseconds - время в миллисекундах,
+    editText - текстовое поле,
+    isInitial - определяет какую переменную необходимо обновить
+    isCreateChart - определяет нужно ли пересоздать круговую диаграмму*/
+    private fun setDateTime(milliseconds : Long = 0, editText : EditText, isInitial : Boolean,  isCreateChart : Boolean = true) {
+        editText.setText(DateUtils.formatDateTime(
                 currentContext,
                 milliseconds,
-                DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_YEAR
-            )
-        )
+                DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_YEAR))
+
 
         val calendar: Calendar = Calendar.getInstance()
         calendar.timeInMillis = milliseconds
@@ -280,43 +259,32 @@ class CostFragment : Fragment() {
         val month = calendar.get(Calendar.MONTH) + 1
         val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
 
-        //Приведение даты в формат YYYY-MM-DD
-        initialDate = if (month < 10) {
-            if (dayOfMonth < 10) "${year}-0${month}-0${dayOfMonth}"
-            else "${year}-0${month}-${dayOfMonth}"
-        } else {
-            if (dayOfMonth < 10) "${year}-${month}-0${dayOfMonth}"
-            else "${year}-${month}-${dayOfMonth}"
+        if (isInitial){
+            initialDate = if (month < 10) {//Приведение даты в формат YYYY-MM-DD
+                if (dayOfMonth < 10) "${year}-0${month}-0${dayOfMonth}"
+                else "${year}-0${month}-${dayOfMonth}"
+            } else {
+                if (dayOfMonth < 10) "${year}-${month}-0${dayOfMonth}"
+                else "${year}-${month}-${dayOfMonth}"
+            }
+        }
+        else{
+            finalDate = if (month < 10) {
+                if (dayOfMonth < 10) "${year}-0${month}-0${dayOfMonth}"
+                else "${year}-0${month}-${dayOfMonth}"
+            } else {
+                if (dayOfMonth < 10) "${year}-${month}-0${dayOfMonth}"
+                else "${year}-${month}-${dayOfMonth}"
+            }
         }
 
-        createPieChart()
+        if (isCreateChart) createPieChart()
     }
 
-    private fun setDateTimeFinal(milliseconds : Long = 0) {
-        editTextFinalDateCost.setText(
-            DateUtils.formatDateTime(
-                currentContext,
-                milliseconds,
-                DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_YEAR
-            )
-        )
-
-        val calendar: Calendar = Calendar.getInstance()
-        calendar.timeInMillis = milliseconds
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH) + 1
-        val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
-
-        //Приведение даты в формат YYYY-MM-DD
-        finalDate = if (month < 10) {
-            if (dayOfMonth < 10) "${year}-0${month}-0${dayOfMonth}"
-            else "${year}-0${month}-${dayOfMonth}"
-        } else {
-            if (dayOfMonth < 10) "${year}-${month}-0${dayOfMonth}"
-            else "${year}-${month}-${dayOfMonth}"
-        }
-
-        createPieChart()
+    // Создание адаптера списка валют
+    private fun createCurrencyAdapter(){
+        val adapterCurrency = ArrayAdapter(currentContext, android.R.layout.simple_spinner_dropdown_item, myDbManager.fromCurrencies())
+        spinnerCurrency.adapter = adapterCurrency
     }
 
     // Создание адаптера списка счетов
