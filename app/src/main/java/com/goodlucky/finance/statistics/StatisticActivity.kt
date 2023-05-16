@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.EditText
 import android.widget.Spinner
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.goodlucky.finance.MyConstants
@@ -54,7 +55,7 @@ class StatisticActivity : AppCompatActivity(), CategoryStatisticAdapter.Listener
             when (view.id) {
                 binding.statisticsInitialDate.id -> {
                     DatePickerDialog(
-                        this@StatisticActivity, dateListenerDateFrom,
+                        this@StatisticActivity, dateListenerInitialDate,
                         dateAndTime.get(Calendar.YEAR),
                         dateAndTime.get(Calendar.MONTH),
                         dateAndTime.get(Calendar.DAY_OF_MONTH)
@@ -62,7 +63,7 @@ class StatisticActivity : AppCompatActivity(), CategoryStatisticAdapter.Listener
                 }
                 binding.statisticsFinalDate.id -> {
                     DatePickerDialog(
-                        this@StatisticActivity, dateListenerDateBefore,
+                        this@StatisticActivity, dateListenerFinalDate,
                         dateAndTime.get(Calendar.YEAR),
                         dateAndTime.get(Calendar.MONTH),
                         dateAndTime.get(Calendar.DAY_OF_MONTH)
@@ -88,8 +89,8 @@ class StatisticActivity : AppCompatActivity(), CategoryStatisticAdapter.Listener
         binding.statisticsSpinnerCurrencies.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 createAccountAdapter()
-                createAdapterCategoryWithSum()
-                setSumCostsAndIncome()
+               // createAdapterCategoryWithSum()
+                //setSumCostsAndIncome()
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -105,39 +106,15 @@ class StatisticActivity : AppCompatActivity(), CategoryStatisticAdapter.Listener
         // Инициализация календаря
         val calendar: Calendar = Calendar.getInstance()
         calendar.timeInMillis = Date().time.milliseconds.inWholeMilliseconds
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
-        val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
+        //  Установка текущей даты
+        setDateTime(calendar.timeInMillis, binding.statisticsFinalDate, false, isNeedToUpdateStatistic = false)
+        // Установка в календарь первого дня текущего месяца
+        calendar.set(Calendar.DAY_OF_MONTH, 1)
+        // Установка первого числа текущего месяца
+        setDateTime(calendar.timeInMillis, binding.statisticsInitialDate, true, isNeedToUpdateStatistic = false)
 
-        //Приведение даты в формат YYYY-MM-DD
-        // Установить сегодняшную дату в переменную
-        initialDate = if (month < 10) {
-            if (dayOfMonth < 10) "${year}-0${month}-0${dayOfMonth}"
-            else "${year}-0${month}-${dayOfMonth}"
-        } else {
-            if (dayOfMonth < 10) "${year}-${month}-0${dayOfMonth}"
-            else "${year}-${month}-${dayOfMonth}"
-        }
-        // Установить первое число текущего месяца
-        finalDate = if (month < 10) {
-            if (dayOfMonth < 10) "${year}-0${month}-01"
-            else "${year}-0${month}-01"
-        } else {
-            if (dayOfMonth < 10) "${year}-${month}-01"
-            else "${year}-${month}-01"
-        }
-
-        // Создание адаптера списка валют
-        val adapterCurrency = ArrayAdapter(this@StatisticActivity, android.R.layout.simple_spinner_dropdown_item, myDbManager.fromCurrencies())
-        binding.statisticsSpinnerCurrencies.adapter = adapterCurrency
-
+        createCurrencyAdapter()
         createAccountAdapter()
-
-        setDateTimeFinal(calendar.timeInMillis)  //  Установка текущей даты
-
-        calendar.set(Calendar.DAY_OF_MONTH, 1)  // Установка в календарь первого дня текущего месяца
-        setDateTimeInitial(calendar.timeInMillis)  // Установка первого числа текущего месяца
-
     }
 
     override fun onPause() {
@@ -154,30 +131,32 @@ class StatisticActivity : AppCompatActivity(), CategoryStatisticAdapter.Listener
 
     }
 
-    // Обработчик события для выбора даты "от которой нужно считать"
-    private var dateListenerDateFrom = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+    // Обработчик события для выбора начальной даты
+    private var dateListenerInitialDate = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
         dateAndTime[Calendar.YEAR] = year
         dateAndTime[Calendar.MONTH] = monthOfYear
         dateAndTime[Calendar.DAY_OF_MONTH] = dayOfMonth
-        setDateTimeInitial(dateAndTime.timeInMillis)
+        setDateTime(dateAndTime.timeInMillis, binding.statisticsInitialDate, true)
     }
 
-    // Обработчик события для выбора даты "до которой нужно считать"
-    private var dateListenerDateBefore = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+    // Обработчик события для выбора конечной даты
+    private var dateListenerFinalDate = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
         dateAndTime[Calendar.YEAR] = year
         dateAndTime[Calendar.MONTH] = monthOfYear
         dateAndTime[Calendar.DAY_OF_MONTH] = dayOfMonth
-        setDateTimeFinal(dateAndTime.timeInMillis)
+        setDateTime(dateAndTime.timeInMillis, binding.statisticsFinalDate, false)
     }
 
-    private fun setDateTimeInitial(milliseconds : Long = 0) {
-        binding.statisticsInitialDate.setText(
-            DateUtils.formatDateTime(
-                this@StatisticActivity,
-                milliseconds,
-                DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_YEAR
-            )
-        )
+    /*Метод устанавливает дату в текстовое поле, где milliseconds - время в миллисекундах,
+    editText - текстовое поле,
+    isInitial - определяет какую переменную необходимо обновить
+    isNeedToUpdateStatistic - определяет нужно ли пересоздать адаптер списка и статистику*/
+    private fun setDateTime(milliseconds : Long = 0, editText : EditText, isInitial : Boolean, isNeedToUpdateStatistic : Boolean = true) {
+        editText.setText(DateUtils.formatDateTime(
+            this,
+            milliseconds,
+            DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_YEAR))
+
 
         val calendar: Calendar = Calendar.getInstance()
         calendar.timeInMillis = milliseconds
@@ -185,47 +164,36 @@ class StatisticActivity : AppCompatActivity(), CategoryStatisticAdapter.Listener
         val month = calendar.get(Calendar.MONTH) + 1
         val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
 
-        //Приведение даты в формат YYYY-MM-DD
-        initialDate = if (month < 10) {
-            if (dayOfMonth < 10) "${year}-0${month}-0${dayOfMonth}"
-            else "${year}-0${month}-${dayOfMonth}"
-        } else {
-            if (dayOfMonth < 10) "${year}-${month}-0${dayOfMonth}"
-            else "${year}-${month}-${dayOfMonth}"
+        if (isInitial){
+            initialDate = if (month < 10) {//Приведение даты в формат YYYY-MM-DD
+                if (dayOfMonth < 10) "${year}-0${month}-0${dayOfMonth}"
+                else "${year}-0${month}-${dayOfMonth}"
+            } else {
+                if (dayOfMonth < 10) "${year}-${month}-0${dayOfMonth}"
+                else "${year}-${month}-${dayOfMonth}"
+            }
+        }
+        else{
+            finalDate = if (month < 10) {
+                if (dayOfMonth < 10) "${year}-0${month}-0${dayOfMonth}"
+                else "${year}-0${month}-${dayOfMonth}"
+            } else {
+                if (dayOfMonth < 10) "${year}-${month}-0${dayOfMonth}"
+                else "${year}-${month}-${dayOfMonth}"
+            }
         }
 
-        createAdapterCategoryWithSum()
-        setSumCostsAndIncome()
-    }
-
-    private fun setDateTimeFinal(milliseconds : Long = 0) {
-        binding.statisticsFinalDate.setText(
-            DateUtils.formatDateTime(
-                this@StatisticActivity,
-                milliseconds,
-                DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_YEAR
-            )
-        )
-
-        val calendar: Calendar = Calendar.getInstance()
-        calendar.timeInMillis = milliseconds
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH) + 1
-        val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
-
-        //Приведение даты в формат YYYY-MM-DD
-        finalDate = if (month < 10) {
-            if (dayOfMonth < 10) "${year}-0${month}-0${dayOfMonth}"
-            else "${year}-0${month}-${dayOfMonth}"
-        } else {
-            if (dayOfMonth < 10) "${year}-${month}-0${dayOfMonth}"
-            else "${year}-${month}-${dayOfMonth}"
+        if (isNeedToUpdateStatistic){
+            createAdapterCategoryWithSum()
+            setSumCostsAndIncome()
         }
-
-        createAdapterCategoryWithSum()
-        setSumCostsAndIncome()
     }
 
+    // Создание адаптера списка валют
+    private fun createCurrencyAdapter(){
+        val adapterCurrency = ArrayAdapter(this@StatisticActivity, android.R.layout.simple_spinner_dropdown_item, myDbManager.fromCurrencies())
+        binding.statisticsSpinnerCurrencies.adapter = adapterCurrency
+    }
     // Создание адаптера списка счетов
     private fun createAccountAdapter(){
         val selectedCurrency = binding.statisticsSpinnerCurrencies.selectedItem as MyCurrency

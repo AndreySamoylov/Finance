@@ -57,6 +57,8 @@ dependencies {
     // Получение информации о запросах
     implementation 'com.squareup.okhttp3:logging-interceptor:4.7.2'
     implementation 'com.squareup.okhttp3:okhttp:4.7.2'
+    // Диалог выбора месяца и года
+    implementation 'com.github.kal72:RackMonthPicker:1.6.1'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

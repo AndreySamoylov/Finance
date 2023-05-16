@@ -7,44 +7,51 @@
     <ImageView
         android:id="@+id/itemCostCategory"
         android:layout_width="60dp"
-        android:layout_height="60dp" />
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:layout_marginEnd="8dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="10dp"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="25dp"
-            android:layout_marginBottom="10dp"
+            android:layout_height="30dp"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/itemCostAccount"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginEnd="8dp"
                 android:layout_weight="1"
                 android:fontFamily="sans-serif-medium"
-                android:hint="@string/account"/>
+                android:hint="@string/account" />
 
             <TextView
                 android:id="@+id/itemCostDate"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:layout_height="30dp"
                 android:layout_weight="1"
                 android:fontFamily="sans-serif-medium"
-                android:hint="@string/date"/>
+                android:hint="@string/date" />
         </LinearLayout>
 
         <TextView
             android:id="@+id/itemCostSum"
             android:layout_width="match_parent"
-            android:layout_height="25dp"
+            android:layout_height="30dp"
             android:fontFamily="sans-serif-medium"
-            android:hint="@string/sum"/>
+            android:hint="@string/sum" />
+
+        <TextView
+            android:id="@+id/itemCostComment"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="@string/inputComment" />
     </LinearLayout>
 
 </LinearLayout>

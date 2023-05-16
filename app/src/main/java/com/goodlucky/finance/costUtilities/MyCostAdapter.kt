@@ -22,7 +22,7 @@ class MyCostAdapter(val listener: Listener, val context: Context) : RecyclerView
         private val binding = CostItemBinding.bind(item)
         private val myDbManager = MyDbManager(item.context)
 
-        fun bind(myCost: MyCost, listener : Listener) = with(binding){
+        fun bind(myCost: MyCost, listener : Listener) = with(binding) {
 
             myDbManager.openDatabase()
 
@@ -31,20 +31,21 @@ class MyCostAdapter(val listener: Listener, val context: Context) : RecyclerView
 
             myDbManager.closeDatabase()
 
-            val costDateText = "${itemView.context.resources.getText(R.string.date)} ${myCost._date_cost}"
+            val costDateText = myCost._date_cost
             //Округление до 2-ух знаков полсе запятой
             val decimalFormat = DecimalFormat("##0.00")
             val strSum: String = decimalFormat.format(myCost._sum)
-            val costSumText = "${itemView.context.resources.getText(R.string.sum)} $strSum"
+
 
             itemCostCategory.setImageResource(category!!._image)
             itemCostCategory.setBackgroundColor(Color.parseColor(category._color))
             itemCostDate.text = costDateText
-            itemCostSum.text= costSumText
+            itemCostSum.text = strSum
             itemCostAccount.text = accountName
+            itemCostComment.text = myCost._comment
 
 
-            itemView.setOnClickListener{
+            itemView.setOnClickListener {
                 listener.onCostClick(myCost)
             }
         }

@@ -1,28 +1,45 @@
 package com.goodlucky.finance.receipts
 
+import android.os.Build
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.goodlucky.finance.R
 import com.goodlucky.finance.database.MyDbManager
 import com.goodlucky.finance.databinding.ActivityReceiptBinding
 import com.goodlucky.finance.items.MyReceipt
 import com.goodlucky.finance.receipts.jsonObjects.*
 import com.goodlucky.finance.receipts.recicleViewAdapter.DoubleTextAdapter
 import com.goodlucky.finance.receipts.recicleViewAdapter.DoubleTextItem
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanIntentResult
+import com.journeyapps.barcodescanner.ScanOptions
+import com.kal.rackmonthpicker.RackMonthPicker
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.time.Duration.Companion.milliseconds
 
 
-class ReceiptActivity : AppCompatActivity() {
+class ReceiptActivity : AppCompatActivity(), DoubleTextAdapter.Listener {
+
+    private lateinit var calendar: Calendar
+
+    private lateinit var initialDate : String
+    private lateinit var finalDate : String
+
+    private lateinit var rackMonthPicker : RackMonthPicker
 
     private lateinit var nalogRuApi : NalogRuApi
     private lateinit var nalogRu: NalogRu
@@ -34,6 +51,7 @@ class ReceiptActivity : AppCompatActivity() {
 
     private var isPhoneNumberSend = false
     private var isPhoneNumberVerify = false
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityReceiptBinding.inflate(layoutInflater)
@@ -42,7 +60,27 @@ class ReceiptActivity : AppCompatActivity() {
 
         myDbManager = MyDbManager(this)
 
-        doubleTextAdapter = DoubleTextAdapter()
+        calendar = Calendar.getInstance()
+
+        // Диалог выбора года и месяца
+        val locale = resources.configuration.locales.get(0) // is now the preferred accessor.
+        rackMonthPicker = RackMonthPicker(this)
+            .setPositiveButton { month, fisthDay, lastDay, year, monthLabel ->
+                calendar.set(Calendar.YEAR, year)
+                calendar.set(Calendar.MONTH, month - 1)
+                calendar.set(Calendar.DAY_OF_MONTH, lastDay)
+                setDate(calendar)
+
+                createReceiptAdapter()
+            }
+            .setNegativeButton { dialog ->
+                dialog.hide()
+            }
+            .setLocale(locale)
+            .setColorTheme(com.kal.rackmonthpicker.R.color.color_primary)
+
+
+        doubleTextAdapter = DoubleTextAdapter(this)
         binding.receiptsRecycleView.layoutManager = LinearLayoutManager(this)
         binding.receiptsRecycleView.adapter = doubleTextAdapter
 
@@ -65,60 +103,60 @@ class ReceiptActivity : AppCompatActivity() {
         binding.receiptsButtonSendPhoneNumber.setOnClickListener {
             try{
                 nalogRu.sendPhoneNumber(binding.receiptsPhoneNumber.text.toString())
-                Toast.makeText(this@ReceiptActivity, com.goodlucky.finance.R.string.cheakYourPhone, Toast.LENGTH_SHORT).show()
-                binding.receiptsImagePhoneNumberStatus.setImageResource(com.goodlucky.finance.R.drawable.green_tick_circle)
+                Toast.makeText(this@ReceiptActivity, R.string.cheakYourPhone, Toast.LENGTH_SHORT).show()
+                binding.receiptsImagePhoneNumberStatus.setImageResource(R.drawable.green_tick_circle)
                 isPhoneNumberSend = true
             }catch (exc : java.lang.Exception){
-                Toast.makeText(this@ReceiptActivity, com.goodlucky.finance.R.string.error, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ReceiptActivity, R.string.error, Toast.LENGTH_SHORT).show()
             }
         }
 
         binding.receiptsButtonSendVerifyCode.setOnClickListener {
             if (!isPhoneNumberSend){
-                Toast.makeText(this@ReceiptActivity, com.goodlucky.finance.R.string.phoneNumberHaveNotBeenSend, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ReceiptActivity, R.string.phoneNumberHaveNotBeenSend, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             if(binding.receiptsVerifyCode.text.toString().isEmpty()){
-                Toast.makeText(this@ReceiptActivity, com.goodlucky.finance.R.string.enterVerifyCode, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ReceiptActivity, R.string.enterVerifyCode, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             try{
                 nalogRu.verifyPhoneNumber(binding.receiptsPhoneNumber.text.toString(), binding.receiptsVerifyCode.text.toString())
-                Toast.makeText(this@ReceiptActivity, com.goodlucky.finance.R.string.verifyCodeSended, Toast.LENGTH_SHORT).show()
-                binding.receiptsImageVerifyCodeStatus.setImageResource(com.goodlucky.finance.R.drawable.green_tick_circle)
+                Toast.makeText(this@ReceiptActivity, R.string.verifyCodeSended, Toast.LENGTH_SHORT).show()
+                binding.receiptsImageVerifyCodeStatus.setImageResource(R.drawable.green_tick_circle)
                 isPhoneNumberVerify = true
             }catch (exc : java.lang.Exception){
-                Toast.makeText(this@ReceiptActivity, com.goodlucky.finance.R.string.error, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ReceiptActivity, R.string.error, Toast.LENGTH_SHORT).show()
             }
         }
 
         binding.receiptsButtonGetBarcodeInformation.setOnClickListener {
             if (!isPhoneNumberVerify) {
-                Toast.makeText(this@ReceiptActivity, com.goodlucky.finance.R.string.youHaveNotBeenVerify, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ReceiptActivity, R.string.youHaveNotBeenVerify, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             if(binding.receiptsBarcode.text.toString().isEmpty()){
-                Toast.makeText(this@ReceiptActivity, com.goodlucky.finance.R.string.barcodeIsEmpty, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ReceiptActivity, R.string.barcodeIsEmpty, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             try {
                 barcode = nalogRu.returnBarcode(binding.receiptsBarcode.text.toString())
             }catch (exc : java.lang.Exception){
-                Toast.makeText(this@ReceiptActivity, com.goodlucky.finance.R.string.error, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ReceiptActivity, R.string.error, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             try{
                 var items = ""
                 for (item in barcode.ticket.document.receipt.items){
-                    items += "${resources.getString(com.goodlucky.finance.R.string.name)} ${item.name} \n"
+                    items += "${resources.getString(R.string.name)} ${item.name} \n"
                     val strValue = item.sum.toInt().toString() // Нужно чтобы убрать копейки из рублей
                     val value = strValue.substring(0, strValue.length - 2) + "." + strValue.substring(strValue.length - 2, strValue.length)
-                    items += "${resources.getString(com.goodlucky.finance.R.string.value)} $value \n"
-                    items += "${resources.getString(com.goodlucky.finance.R.string.quantity)} ${item.quantity} \n"
+                    items += "${resources.getString(R.string.value)} $value \n"
+                    items += "${resources.getString(R.string.quantity)} ${item.quantity} \n"
                     items += ""
                 }
 
@@ -132,14 +170,14 @@ class ReceiptActivity : AppCompatActivity() {
 
                 // *** Заполнение списка ***
                 val listDoubleTextItem = ArrayList<DoubleTextItem>()
-                listDoubleTextItem.add(DoubleTextItem(resources.getString(com.goodlucky.finance.R.string.date), selectedReceipt.date)) // Дата
-                listDoubleTextItem.add(DoubleTextItem(resources.getString(com.goodlucky.finance.R.string.items), items)) // Что купили?
-                listDoubleTextItem.add(DoubleTextItem(resources.getString(com.goodlucky.finance.R.string.place), barcode.ticket.document.receipt.retailPlace)) // Название места
-                listDoubleTextItem.add(DoubleTextItem(resources.getString(com.goodlucky.finance.R.string.address), barcode.ticket.document.receipt.retailPlaceAddress)) // Адрес места
+                listDoubleTextItem.add(DoubleTextItem(resources.getString(R.string.date), selectedReceipt.date)) // Дата
+                listDoubleTextItem.add(DoubleTextItem(resources.getString(R.string.items), items)) // Что купили?
+                listDoubleTextItem.add(DoubleTextItem(resources.getString(R.string.place), barcode.ticket.document.receipt.retailPlace)) // Название места
+                listDoubleTextItem.add(DoubleTextItem(resources.getString(R.string.address), barcode.ticket.document.receipt.retailPlaceAddress)) // Адрес места
                 // Загрузить в RecycleView
                 doubleTextAdapter.submitList(listDoubleTextItem)
             }catch (exc : java.lang.Exception){
-                Toast.makeText(this@ReceiptActivity, com.goodlucky.finance.R.string.errorRead, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ReceiptActivity, R.string.errorRead, Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -153,10 +191,10 @@ class ReceiptActivity : AppCompatActivity() {
                 val selectedReceipt = binding.receiptsSpinnerReceipt.selectedItem as MyReceipt
                 if (selectedReceipt.retailPlaceAddress != ""){
                     // ********* Заполнение списка *********
-                    listDoubleTextItem.add(DoubleTextItem(resources.getString(com.goodlucky.finance.R.string.date), selectedReceipt.date))  // Дата
-                    listDoubleTextItem.add(DoubleTextItem(resources.getString(com.goodlucky.finance.R.string.items), selectedReceipt.items))  // Что купили?
-                    listDoubleTextItem.add(DoubleTextItem(resources.getString(com.goodlucky.finance.R.string.place), selectedReceipt.retailPlace))  // Название места
-                    listDoubleTextItem.add(DoubleTextItem(resources.getString(com.goodlucky.finance.R.string.address), selectedReceipt.retailPlaceAddress))  // Адрес места
+                    listDoubleTextItem.add(DoubleTextItem(resources.getString(R.string.date), selectedReceipt.date))  // Дата
+                    listDoubleTextItem.add(DoubleTextItem(resources.getString(R.string.items), selectedReceipt.items))  // Что купили?
+                    listDoubleTextItem.add(DoubleTextItem(resources.getString(R.string.place), selectedReceipt.retailPlace))  // Название места
+                    listDoubleTextItem.add(DoubleTextItem(resources.getString(R.string.address), selectedReceipt.retailPlaceAddress))  // Адрес места
                     // Загрузить в RecycleView
                     doubleTextAdapter.submitList(listDoubleTextItem)
                 }else{
@@ -175,20 +213,67 @@ class ReceiptActivity : AppCompatActivity() {
         super.onResume()
         myDbManager.openDatabase()
 
-        val receiptAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, myDbManager.fromReceipts())
-        binding.receiptsSpinnerReceipt.adapter = receiptAdapter
+        calendar.timeInMillis = Date().time.milliseconds.inWholeMilliseconds
+        val maxDayInMonth : Int = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+        calendar.set(Calendar.DAY_OF_MONTH, maxDayInMonth)
+        setDate(calendar)
+
+        createReceiptAdapter()
 
         setPreferences()
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onDestroy() {
+        super.onDestroy()
         myDbManager.closeDatabase()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.receipt_toolbar_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (android.R.id.home == item.itemId) finish()
+        when (item.itemId){
+            android.R.id.home -> finish()
+            R.id.receiptToolbarMenuScanner -> barcodeLauncher.launch(ScanOptions())
+            R.id.receiptToolbarMenuDatePicker -> rackMonthPicker.show()
+        }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun setDate(calendar: Calendar){
+//        binding.analyticDate.setText(
+//            DateUtils.formatDateTime(this, calendar.timeInMillis,
+//                DateUtils.FORMAT_NO_MONTH_DAY or DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_YEAR))
+
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH) + 1
+        val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
+
+        // Приведение начальной и конечной даты в нужный формта
+        initialDate = if (month < 10) {
+            if (dayOfMonth < 10) "${year}-0${month}-01"
+            else "${year}-0${month}-01"
+        } else {
+            if (dayOfMonth < 10) "${year}-${month}-01"
+            else "${year}-${month}-01"
+        }
+
+        finalDate = if (month < 10) {
+            if (dayOfMonth < 10) "${year}-0${month}-0${dayOfMonth}"
+            else "${year}-0${month}-${dayOfMonth}"
+        } else {
+            if (dayOfMonth < 10) "${year}-${month}-0${dayOfMonth}"
+            else "${year}-${month}-${dayOfMonth}"
+        }
+    }
+
+    private fun createReceiptAdapter(){
+        val listReceipt = myDbManager.fromReceipts(initialDate, finalDate) // Получение списка
+
+        val receiptAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, listReceipt)
+        binding.receiptsSpinnerReceipt.adapter = receiptAdapter
     }
 
     private fun setPreferences() {
@@ -196,5 +281,54 @@ class ReceiptActivity : AppCompatActivity() {
         // Установить номер телефона
         val phoneNumber = sharedPref.getString(resources.getString(com.goodlucky.finance.R.string.phoneNumber), "")
         binding.receiptsPhoneNumber.setText(phoneNumber)
+    }
+
+    override fun onItemClick(doubleTextItem: DoubleTextItem) {
+
+    }
+
+    // Сканер
+    private val barcodeLauncher = registerForActivityResult(
+        ScanContract()
+    ) { result: ScanIntentResult ->
+        if (result.contents == null) {
+            Toast.makeText( this@ReceiptActivity, R.string.canceled, Toast.LENGTH_LONG).show()
+        } else {
+            Toast.makeText(
+                this@ReceiptActivity,
+                R.string.scanned,
+                Toast.LENGTH_LONG
+            ).show()
+
+            //Обработка строки
+            //Получение даты
+            val year = result.contents.substring(2, 6)
+            val month = result.contents.substring(6, 8)
+            val dayOfMonth = result.contents.substring(8, 10)
+            val hour = result.contents.substring(11, 13)
+            val minute = result.contents.substring(13, 15)
+
+            // Получение суммы
+            var sIndex = 0 // Индекс буквы 's'
+            var pointIndex = 0 //Индекс точки '.'
+            for (i in 0 until result.contents.length){
+                if (result.contents.elementAt(i) == 's') {
+                    sIndex = i
+                }
+                if (result.contents.elementAt(i) == '.'){
+                    pointIndex = i
+                }
+            }
+
+            val sum = result.contents.substring(sIndex + 2, pointIndex + 3)
+
+            //Добавление чека в базу данных
+            val date = "${year}-${month}-${dayOfMonth} ${hour}:${minute}"
+            val receipt = MyReceipt(0, result.contents, date, sum.toDouble(),  "", "", "")
+            myDbManager.insertToReceipt(receipt)
+
+            // Обновление списка чеков
+            createReceiptAdapter()
+        }
     }
 }

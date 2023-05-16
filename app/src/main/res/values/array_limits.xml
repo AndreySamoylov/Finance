@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="array_limits">
+        <item name="0">Не более</item>
+        <item name="1">Не менее</item>
+    </string-array>
+</resources>

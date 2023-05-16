@@ -16,6 +16,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.preference.PreferenceManager
 import androidx.viewpager2.widget.ViewPager2
 import com.goodlucky.finance.accountUtilities.AccountFragment
+import com.goodlucky.finance.analytic.AnalyticActivity
 import com.goodlucky.finance.categoryUtilities.CategoryFragment
 import com.goodlucky.finance.costUtilities.CostFragment
 import com.goodlucky.finance.database.MyDbManager
@@ -93,6 +94,10 @@ class MainActivity : AppCompatActivity() {
                     val intent = Intent(this@MainActivity, ReceiptActivity::class.java)
                     startActivity(intent)
                 }
+                R.id.item_analytic -> {
+                    val intent = Intent(this@MainActivity, AnalyticActivity::class.java)
+                    startActivity(intent)
+                }
                 R.id.item_save_data_to_server -> {
                     val dialogClickListener = DialogInterface.OnClickListener { _, which ->
                         when (which) {
@@ -163,9 +168,10 @@ class MainActivity : AppCompatActivity() {
             val listBank: List<MyBank> = myDbManager.fromBanks()
             val listCurrency: List<MyCurrency> = myDbManager.fromCurrencies()
             val listReceipt: List<MyReceipt> = myDbManager.fromReceipts()
+            val listLimits : List<MyLimit> = myDbManager.fromLimits()
             myDbManager.closeDatabase()
             val allData =
-                MyFirebaseUserData(listCost, listIncome, listCategory, listAccount, listBank, listCurrency, listReceipt)
+                MyFirebaseUserData(listCost, listIncome, listCategory, listAccount, listBank, listCurrency, listReceipt, listLimits)
             val userName = myAuth.currentUser!!.email.toString().replace(".", "")
             myDataBase.child(userName).setValue(allData)
             Toast.makeText(this@MainActivity, R.string.dataSuccesfulSave,Toast.LENGTH_SHORT).show()
@@ -188,6 +194,7 @@ class MainActivity : AppCompatActivity() {
                 val listBank = allData?.listBank
                 val listCurrency = allData?.listCurrency
                 val listReceipt = allData?.listReceipt
+                val listLimit = allData?.listLimits
                 // Полное обновление базы данных
                 myDbManager.openDatabase()
 
@@ -222,6 +229,8 @@ class MainActivity : AppCompatActivity() {
                 for (cost in listCost!!) myDbManager.insertToCostsWithID(cost)
                 myDbManager.clearTableIncome()
                 for (income in listIncome!!) myDbManager.insertToIncomeWithID(income)
+                myDbManager.clearTableLimits()
+                for (limit in listLimit!!) myDbManager.insertToLimitsWithID(limit)
 
                 myDbManager.closeDatabase()
 

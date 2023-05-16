@@ -15,7 +15,9 @@
     <string name="date">Дата</string>
     <string name="other">Остальное</string>
     <string name="sum">Сумма</string>
+    <string name="comment">Комментарий</string>
     <string name="account">Счёт</string>
+    <string name="limit">Ограничение</string>
     <string name="today">Сегодня</string>
     <string name="yesterday">Вчера</string>
     <string name="dayBeforeYesterday">Позавчера</string>
@@ -57,6 +59,7 @@
     <string name="chooseAccount">Выберите счёт</string>
     <string name="chooseBank">Выберите банк</string>
     <string name="chooseCurrency">Выберите валюту</string>
+    <string name="chooseLimit">Выберите ограничение</string>
     <string name="changeDate">Изменить дату</string>
     <string name="scanned">Отсканировано</string>
     <string name="youDoNotEnterAccount">Вы не вошли в аккаунт</string>
@@ -92,6 +95,7 @@
     <string name="enterAccount">Войти в аккаунт</string>
     <string name="statistics">Статистика</string>
     <string name="receiptsCheak">Проверка чеков</string>
+    <string name="analytic">Аналитика</string>
     <string name="saveDataToServer">Сохранить данные</string>
     <string name="loadDataFromServer">Загрузить данные</string>
     <string name="readFromCvsFile">Чтение из CVS файла</string>
@@ -107,6 +111,10 @@
     <string name="night">Тёмная</string>
 
     <string name="advanced">Продвинутые</string>
+
+    <!--Для статистики-->
+    <string name="noMore">Не более</string>
+    <string name="noLess">Не менее</string>
 
     <!--Для статистики-->
     <string name="textStatisticsResult">Доходы: + \nРасходы: - \nИтого </string>
@@ -135,4 +143,9 @@
     <!--logs-->
     <string name="ReadCvsActivity">ReadCvsActivity</string>
 
+
+    <string name="limitIsFine">Ограничение выполняется</string>
+    <string name="limitIsBreak">Ограничение нарушено</string>
+    <string name="currentSum">Текущая сумма</string>
+    <string name="doYouWantToDeleteThatLimit">Вы действительно хотите удалить это ограничение?</string>
 </resources>

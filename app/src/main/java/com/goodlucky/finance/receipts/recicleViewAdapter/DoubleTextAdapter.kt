@@ -7,16 +7,22 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.goodlucky.finance.R
+import com.goodlucky.finance.database.MyDbManager
 import com.goodlucky.finance.databinding.DoubleTextItemBinding
+import com.goodlucky.finance.items.MyAccount
 
 
-class DoubleTextAdapter : ListAdapter<DoubleTextItem, DoubleTextAdapter.Holder>(Comparator()) {
+class DoubleTextAdapter(val listener: Listener) : ListAdapter<DoubleTextItem, DoubleTextAdapter.Holder>(Comparator()) {
     class Holder(view : View) : RecyclerView.ViewHolder(view){
         private val binding = DoubleTextItemBinding.bind(view)
 
-        fun bind(doubleTextItem: DoubleTextItem) = with(binding){
+        fun bind(doubleTextItem: DoubleTextItem, listener: Listener) = with(binding){
             doubleTextItemTitle.text = doubleTextItem.title
             doubleTextItemDescription.text = doubleTextItem.description
+
+            itemView.setOnClickListener {
+                listener.onItemClick(doubleTextItem)
+            }
         }
     }
 
@@ -37,6 +43,10 @@ class DoubleTextAdapter : ListAdapter<DoubleTextItem, DoubleTextAdapter.Holder>(
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), listener)
+    }
+
+    interface Listener{
+        fun onItemClick(doubleTextItem: DoubleTextItem)
     }
 }

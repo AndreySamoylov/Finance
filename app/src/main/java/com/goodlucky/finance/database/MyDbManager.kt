@@ -66,8 +66,9 @@ class MyDbManager(context: Context) {
 
     fun fromReceipts() : List<MyReceipt>{
         val tempList: MutableList<MyReceipt> = ArrayList()
+        val sortOrder = MyDatabaseConstants.DATE_RECEIPT
         val cursor = sqLiteDatabase!!.query(
-            MyDatabaseConstants.TABLE_RECEIPTS,null,null,null,null,null,null)
+            MyDatabaseConstants.TABLE_RECEIPTS,null,null,null,null,null,sortOrder)
         while (cursor.moveToNext()) {
             @SuppressLint("Range") val id = cursor.getLong(cursor.getColumnIndex(MyDatabaseConstants.ID_RECEIPT))
             @SuppressLint("Range") val code = cursor.getString(cursor.getColumnIndex(MyDatabaseConstants.CODE_RECEIPT))
@@ -87,9 +88,9 @@ class MyDbManager(context: Context) {
         val tempList: MutableList<MyReceipt> = ArrayList()
         val selection = "${MyDatabaseConstants.DATE_RECEIPT} >= ? AND ${MyDatabaseConstants.DATE_RECEIPT} <= ?"
         val selectionArgs = arrayOf(initialDate, finalDate)
-
+        val sortOrder = MyDatabaseConstants.DATE_RECEIPT
         val cursor = sqLiteDatabase!!.query(
-            MyDatabaseConstants.TABLE_RECEIPTS,null,selection,selectionArgs,null,null,null)
+            MyDatabaseConstants.TABLE_RECEIPTS,null,selection,selectionArgs,null,null,sortOrder)
         while (cursor.moveToNext()) {
             @SuppressLint("Range") val id = cursor.getLong(cursor.getColumnIndex(MyDatabaseConstants.ID_RECEIPT))
             @SuppressLint("Range") val code = cursor.getString(cursor.getColumnIndex(MyDatabaseConstants.CODE_RECEIPT))
@@ -99,6 +100,7 @@ class MyDbManager(context: Context) {
             @SuppressLint("Range") val retailPlace = cursor.getString(cursor.getColumnIndex(MyDatabaseConstants.RETAIL_PLACE_RECEIPT))
             @SuppressLint("Range") val retailPlaceAddress = cursor.getString(cursor.getColumnIndex(MyDatabaseConstants.RETAIL_PLACE_ADDRESS_RECEIPT))
             val receipt = MyReceipt(id, code, date, sum, items, retailPlace, retailPlaceAddress)
+            tempList.add(receipt)
         }
         cursor.close()
         return tempList
@@ -1139,6 +1141,83 @@ class MyDbManager(context: Context) {
         return allSum
     }
 
+    //***********************************
+    fun insertToLimits(limit: MyLimit){
+        val contentValues = ContentValues()
+        contentValues.put(MyDatabaseConstants.TYPE_LIMIT, limit._type)
+        contentValues.put(MyDatabaseConstants.SUM_LIMIT, limit._sum)
+        contentValues.put(MyDatabaseConstants.ID_LIMIT_CATEGORY, limit._id_category)
+        sqLiteDatabase!!.insert(MyDatabaseConstants.TABLE_LIMITS, null, contentValues)
+    }
+
+    fun insertToLimitsWithID(limit: MyLimit){
+        val contentValues = ContentValues()
+        contentValues.put(MyDatabaseConstants.ID_LIMIT, limit._id)
+        contentValues.put(MyDatabaseConstants.TYPE_LIMIT, limit._type)
+        contentValues.put(MyDatabaseConstants.SUM_LIMIT, limit._sum)
+        contentValues.put(MyDatabaseConstants.ID_LIMIT_CATEGORY, limit._id_category)
+        sqLiteDatabase!!.insert(MyDatabaseConstants.TABLE_LIMITS, null, contentValues)
+    }
+
+    fun updateInLimits(limit: MyLimit) {
+        val values = ContentValues().apply {
+            put(MyDatabaseConstants.TYPE_LIMIT, limit._type)
+            put(MyDatabaseConstants.SUM_LIMIT, limit._sum)
+            put(MyDatabaseConstants.ID_LIMIT_CATEGORY, limit._id_category)
+        }
+        val selection = "${MyDatabaseConstants.ID_LIMIT} = ?"
+        val selectionArgs = arrayOf(limit._id.toString())
+        sqLiteDatabase?.update(MyDatabaseConstants.TABLE_LIMITS, values, selection, selectionArgs)
+    }
+
+    fun deleteFromLimits(_id: Long) {
+        sqLiteDatabase!!.execSQL(
+            ("DELETE FROM " + MyDatabaseConstants.TABLE_LIMITS +
+                    " WHERE " + MyDatabaseConstants.ID_LIMIT + "=" + _id + ";")
+        )
+    }
+
+    fun fromLimits() : List<MyLimit>{
+        val tempList: MutableList<MyLimit> = ArrayList()
+        val cursor = sqLiteDatabase!!.query(
+            MyDatabaseConstants.TABLE_LIMITS,null,null,null,null,null,null)
+        while (cursor.moveToNext()) {
+            @SuppressLint("Range") val id = cursor.getLong(cursor.getColumnIndex(MyDatabaseConstants.ID_LIMIT))
+            @SuppressLint("Range") val type = cursor.getShort(cursor.getColumnIndex(MyDatabaseConstants.TYPE_LIMIT)).toByte()
+            @SuppressLint("Range") val sum = cursor.getDouble(cursor.getColumnIndex(MyDatabaseConstants.SUM_LIMIT))
+            @SuppressLint("Range") val idCategory = cursor.getLong(cursor.getColumnIndex(MyDatabaseConstants.ID_LIMIT_CATEGORY))
+            val limit = MyLimit(id, type, sum, idCategory)
+            tempList.add(limit)
+        }
+        cursor.close()
+        return tempList
+    }
+
+    fun findLimit(categoryID : Long, type : Byte) : MyLimit{
+        val selection = "${MyDatabaseConstants.ID_LIMIT_CATEGORY} = ? AND ${MyDatabaseConstants.TYPE_LIMIT} = ?"
+        val selectionArgs = arrayOf(categoryID.toString(), type.toString())
+        val cursor = sqLiteDatabase!!.query(
+            MyDatabaseConstants.TABLE_LIMITS,
+            null,
+            selection,
+            selectionArgs,
+            null,
+            null,
+            null,
+            "1"
+        )
+        val limit = MyLimit()
+        while (cursor.moveToNext()) {
+            limit._id = cursor.getLong(cursor.getColumnIndexOrThrow(MyDatabaseConstants.ID_LIMIT))
+            limit._type = cursor.getShort(cursor.getColumnIndexOrThrow(MyDatabaseConstants.TYPE_LIMIT)).toByte()
+            limit._sum = cursor.getDouble(cursor.getColumnIndexOrThrow(MyDatabaseConstants.SUM_LIMIT))
+            limit._id_category = cursor.getLong(cursor.getColumnIndexOrThrow(MyDatabaseConstants.ID_LIMIT_CATEGORY))
+        }
+        cursor.close()
+        return limit
+    }
+    //***********************************
+
     fun clearTableReceipts(){
         sqLiteDatabase!!.delete(MyDatabaseConstants.TABLE_RECEIPTS,null,null)
     }
@@ -1165,5 +1244,9 @@ class MyDbManager(context: Context) {
 
     fun clearTableIncome(){
         sqLiteDatabase!!.delete(MyDatabaseConstants.TABLE_INCOME,null,null)
+    }
+
+    fun clearTableLimits(){
+        sqLiteDatabase!!.delete(MyDatabaseConstants.TABLE_LIMITS,null,null)
     }
 }
