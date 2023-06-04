@@ -19,10 +19,14 @@ import com.goodlucky.finance.database.MyDbManager
 import com.goodlucky.finance.items.MyAccount
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.highlight.Highlight
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.ColorTemplate
+import com.goodlucky.finance.CategoryListActivity
 import com.goodlucky.finance.items.MyCurrency
 import java.util.*
 import kotlin.collections.ArrayList
@@ -43,7 +47,7 @@ class CostFragment : Fragment() {
 
     private var dateAndTime = Calendar.getInstance()
 
-    private lateinit var myDbManager: MyDbManager
+        private lateinit var myDbManager: MyDbManager
 
     private lateinit var currentContext: Context
     override fun onCreateView(
@@ -125,6 +129,30 @@ class CostFragment : Fragment() {
         // Назначение слушателя для текстовых полей
         editTextInitialDateCost.setOnClickListener(onEditTextClickListener)
         editTextFinalDateCost.setOnClickListener(onEditTextClickListener)
+
+        pieChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener{
+            override fun onValueSelected(e: Entry?, h: Highlight?) {
+                val pieEntry = e as PieEntry
+                val label = pieEntry.label
+                val value = pieEntry.value.toDouble()
+                val selectedAccount = spinnerAccounts.selectedItem as MyAccount
+                val selectedCurrency = spinnerCurrency.selectedItem as MyCurrency
+
+                val intent = Intent(currentContext, CategoryListActivity::class.java)
+                intent.putExtra(MyConstants.STATE, MyConstants.COST)
+                intent.putExtra(MyConstants.INITIAL_DATE, initialDate)
+                intent.putExtra(MyConstants.FINAL_DATE, finalDate)
+                intent.putExtra(MyConstants.VALUE, value)
+                intent.putExtra(MyConstants.ID_ACCOUNT, selectedAccount._id)
+                intent.putExtra(MyConstants.ID_CURRENCY, selectedCurrency   ._id)
+                intent.putExtra(MyConstants.NAME_CATEGORY, label)
+                startActivity(intent)
+            }
+
+            override fun onNothingSelected() {
+
+            }
+        })
     }
 
     override fun onResume() {

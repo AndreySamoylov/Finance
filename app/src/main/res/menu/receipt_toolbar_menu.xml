@@ -12,4 +12,10 @@
         android:icon="@drawable/baseline_date_range_24"
         android:title="@string/inputDate"
         app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/receiptToolbarMenuDeleteReceipt"
+        android:icon="@drawable/baseline_delete_24"
+        android:title="@string/deleteReceipt"
+        app:showAsAction="ifRoom"/>
 </menu>

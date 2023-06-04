@@ -1,65 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/colorSelector"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#CC000000"
     android:visibility="visible">
 
+
     <LinearLayout
+        android:id="@+id/linearLayout17"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:background="#333333"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
         android:orientation="vertical"
-        android:padding="50dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/btnColorPreview"
+            android:layout_width="match_parent"
+            android:layout_height="200dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_gravity="center"
+            android:background="#555555"
+            android:gravity="center">
 
-            <Button
-                android:id="@+id/btnColorPreview"
-                android:layout_width="match_parent"
-                android:layout_height="200dp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:text="@string/hexCode"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/strColor"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
                 android:background="#555555"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/hexCode"
-                    android:textColor="#FFFFFF"
-                    android:textSize="20sp" />
-
-                <EditText
-                    android:id="@+id/strColor"
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:background="#555555"
-                    android:imeOptions="actionDone"
-                    android:maxLength="8"
-                    android:padding="5sp"
-                    android:textAlignment="center"
-                    android:textColor="#FFFFFF"
-                    android:textSize="20dp" />
-            </LinearLayout>
+                android:imeOptions="actionDone"
+                android:maxLength="8"
+                android:padding="5sp"
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:textSize="20dp" />
         </LinearLayout>
-
-        <SeekBar
-            android:id="@+id/colorR"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:max="255"
-            android:padding="30px"
-            android:progress="255"
-            android:thumbTint="@color/red" />
 
         <SeekBar
             android:id="@+id/colorG"
@@ -81,26 +73,38 @@
             android:theme="@style/TextAppearance.Compat.Notification"
             android:thumbTint="@color/blue" />
 
-        <LinearLayout
+        <SeekBar
+            android:id="@+id/colorR"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30px"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:max="255"
+            android:padding="30px"
+            android:progress="255"
+            android:thumbTint="@color/red" />
 
-            <Button
-                android:id="@+id/colorCancelBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:text="@string/cancel" />
-
-            <Button
-                android:id="@+id/colorOkBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:text="@string/ok" />
-        </LinearLayout>
     </LinearLayout>
-</RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout17"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout17"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout17">
+
+        <Button
+            android:id="@+id/colorCancelBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:text="@string/cancel" />
+
+        <Button
+            android:id="@+id/colorOkBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:text="@string/ok" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,7 +2,6 @@ package com.goodlucky.finance
 
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.util.Log
 import android.view.MenuItem
 import android.widget.ArrayAdapter
@@ -17,8 +16,6 @@ import com.goodlucky.finance.items.MyCategory
 import com.goodlucky.finance.items.MyCost
 import com.goodlucky.finance.items.MyIncome
 import java.io.BufferedReader
-import java.io.File
-import java.io.FileWriter
 import java.io.InputStream
 import java.nio.charset.Charset
 
@@ -39,7 +36,11 @@ class ReadCvsActivity : AppCompatActivity() {
         myDbManager = MyDbManager(this)
 
         findViewById<Button>(R.id.buttonReadCvsFile).setOnClickListener {
-            getContent.launch("*/*")
+            try {
+                getContent.launch("*/*")
+            }catch (exception : java.lang.Exception){
+                Log.d("ReadCvsActivity", exception.toString())
+            }
         }
     }
 
@@ -81,8 +82,14 @@ class ReadCvsActivity : AppCompatActivity() {
             Log.d("ReadCvsActivity", exception.toString())
             return@registerForActivityResult
         }
+        var reader : BufferedReader? = null
+        try {
+            reader = BufferedReader(inputStream?.reader(Charset.forName("Windows-1251")))
+        }catch (exception : java.lang.Exception){
+            Log.d("ReadCvsActivity", exception.toString())
+            return@registerForActivityResult
+        }
 
-        val reader = BufferedReader(inputStream?.reader(Charset.forName("Windows-1251")))
         try {
             var line: String = reader.readLine() // Первая строка содержит заголовки
             while ( line != null) {

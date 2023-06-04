@@ -23,9 +23,18 @@ class LimitAdapter(val listener: Listener, val initialDate : String, val finalDa
 
         fun bind(limit: MyLimit, listener : Listener, initialDate: String, finalDate: String) = with(binding){
             myDbManager.openDatabase()
+            // Название категории
             val strCategory = myDbManager.findCategoryByID(limit._id_category)
+            // Название валюты
+            val strCurrency = myDbManager.getCurrencyName(limit._id_currency)
+            // Сумма по категории
+            val listAccount = myDbManager.fromAccountsByCurrency(limit._id_currency)
+            var totallySumByCategory = 0.0
+            for (account in listAccount){
+                val sum = myDbManager.getSumCostByCategory(limit._id_category, initialDate, finalDate, account._id)
+                totallySumByCategory += sum
 
-            val totallySumByCategory = myDbManager.getSumCostByCategory(limit._id_category, initialDate, finalDate)
+            }
             myDbManager.closeDatabase()
 
             var strType = "" // Текстовое обозначение типа
@@ -56,6 +65,7 @@ class LimitAdapter(val listener: Listener, val initialDate : String, val finalDa
                     "${context.resources.getString(R.string.limit)}: $strType\n" +
                     "${context.resources.getString(R.string.sum)}: $strSum\n" +
                     "$limitText \n" +
+                    "${context.resources.getString(R.string.currency)}: $strCurrency\n" +
                     "${context.resources.getString(R.string.currentSum)}: $strTotalSum \n\n"
 
             limitItemTextView.text = strLimit

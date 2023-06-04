@@ -6,49 +6,48 @@
     android:layout_height="match_parent"
     tools:context=".analytic.AnalyticActivity">
 
-    <EditText
-        android:id="@+id/analyticDate"
+    <LinearLayout
+        android:id="@+id/linearLayout16"
         android:layout_width="0dp"
-        android:layout_height="52dp"
-        android:layout_marginTop="8dp"
-        android:autofillHints=""
-        android:ems="10"
-        android:focusable="auto"
-        android:focusableInTouchMode="false"
-        android:gravity="center"
-        android:hint="@string/date"
-        android:inputType="date"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="@+id/linearLayout15"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/linearLayout15"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout15" />
-
-    <Spinner
-        android:id="@+id/analyticCategory"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:contentDescription="@string/chooseCategory"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Spinner
+            android:id="@+id/analyticCategory"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginBottom="8dp"
+            android:layout_weight="1"
+            android:contentDescription="@string/chooseCategory" />
+
+        <Spinner
+            android:id="@+id/analyticSpinnerCurrency"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:contentDescription="@string/chooseCurrency" />
+    </LinearLayout>
 
     <EditText
         android:id="@+id/analyticLimitSum"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:autofillHints=""
         android:ems="10"
         android:hint="@string/sum"
         android:inputType="numberDecimal"
         android:minHeight="48dp"
-        app:layout_constraintEnd_toEndOf="@+id/analyticCategory"
-        app:layout_constraintStart_toStartOf="@+id/analyticCategory"
-        app:layout_constraintTop_toBottomOf="@+id/analyticCategory" />
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout16"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout16"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout16" />
 
     <Spinner
         android:id="@+id/spinnerLimit"
@@ -85,6 +84,24 @@
             android:layout_weight="1"
             android:text="@string/change" />
     </LinearLayout>
+
+    <EditText
+        android:id="@+id/analyticDate"
+        android:layout_width="0dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="8dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:focusable="auto"
+        android:focusableInTouchMode="false"
+        android:gravity="center"
+        android:hint="@string/date"
+        android:inputType="date"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout15"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout15"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout15" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/analyticListLimits"

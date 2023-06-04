@@ -19,6 +19,7 @@ import com.goodlucky.finance.R
 import com.goodlucky.finance.database.MyDbManager
 import com.goodlucky.finance.databinding.ActivityAnalyticBinding
 import com.goodlucky.finance.items.MyCategory
+import com.goodlucky.finance.items.MyCurrency
 import com.goodlucky.finance.items.MyLimit
 import com.kal.rackmonthpicker.RackMonthPicker
 import java.text.DecimalFormat
@@ -83,8 +84,9 @@ class AnalyticActivity : AppCompatActivity(), LimitAdapter.Listener {
             val type = binding.spinnerLimit.selectedItemId.toByte()
             val sum = binding.analyticLimitSum.text.toString().toDouble()
             val category = binding.analyticCategory.selectedItem as MyCategory
+            val currency = binding.analyticSpinnerCurrency.selectedItem as MyCurrency
 
-            myDbManager.insertToLimits(MyLimit(0, type, sum, category._id))
+            myDbManager.insertToLimits(MyLimit(0, type, sum, category._id, currency._id))
 
             createLimitRecyclerViewAdapter()
             binding.analyticButtonAdd.isEnabled = false
@@ -104,8 +106,9 @@ class AnalyticActivity : AppCompatActivity(), LimitAdapter.Listener {
             val type = binding.spinnerLimit.selectedItemId.toByte()
             val sum = binding.analyticLimitSum.text.toString().toDouble()
             val category = binding.analyticCategory.selectedItem as MyCategory
+            val currency = binding.analyticSpinnerCurrency.selectedItem as MyCurrency
 
-            val limit = MyLimit(selectedLimit._id, type, sum, category._id)
+            val limit = MyLimit(selectedLimit._id, type, sum, category._id, currency._id)
 
             myDbManager.updateInLimits(limit)
 
@@ -116,9 +119,9 @@ class AnalyticActivity : AppCompatActivity(), LimitAdapter.Listener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val category = binding.analyticCategory.selectedItem as MyCategory
                 val type = binding.spinnerLimit.selectedItemId.toByte()
+                val currency = binding.analyticSpinnerCurrency.selectedItem as MyCurrency
 
-
-                selectedLimit = myDbManager.findLimit(category._id, type)
+                selectedLimit = myDbManager.findLimit(category._id, type, currency._id)
 
                 if (selectedLimit._id != (0).toLong()){
                     val decimalFormat = DecimalFormat("##0.00")
@@ -141,6 +144,7 @@ class AnalyticActivity : AppCompatActivity(), LimitAdapter.Listener {
             }
         }
         binding.analyticCategory.onItemSelectedListener = itemSelectedListener
+        binding.analyticSpinnerCurrency.onItemSelectedListener = itemSelectedListener
         binding.spinnerLimit.onItemSelectedListener = itemSelectedListener
     }
 
@@ -154,6 +158,7 @@ class AnalyticActivity : AppCompatActivity(), LimitAdapter.Listener {
         setDate(calendar)
 
         createLimitAdapter()
+        createCurrencyAdapter()
         createCategoryAdapter()
         createLimitRecyclerViewAdapter()
     }
@@ -201,6 +206,11 @@ class AnalyticActivity : AppCompatActivity(), LimitAdapter.Listener {
         binding.spinnerLimit.adapter = adapterLimits
     }
 
+    private fun createCurrencyAdapter(){
+        val adapterCurrency = ArrayAdapter(this@AnalyticActivity, android.R.layout.simple_spinner_dropdown_item, myDbManager.fromCurrencies())
+        binding.analyticSpinnerCurrency.adapter = adapterCurrency
+    }
+
     private fun createCategoryAdapter(){
         val listCategory = myDbManager.fromCategories(MyConstants.CATEGORY_TYPE_COST)
         val adapterCategory = MySpinnerImageWithTextArrayAdapter(this, listCategory)
@@ -226,7 +236,8 @@ class AnalyticActivity : AppCompatActivity(), LimitAdapter.Listener {
                     // Обновить поля связанные с выбранным ограничением
                     val category = binding.analyticCategory.selectedItem as MyCategory
                     val type = binding.spinnerLimit.selectedItemId.toByte()
-                    selectedLimit = myDbManager.findLimit(category._id, type)
+                    val currency = binding.analyticSpinnerCurrency.selectedItem as MyCurrency
+                    selectedLimit = myDbManager.findLimit(category._id, type, currency._id)
 
                     if (selectedLimit._id != (0).toLong()){
                         val decimalFormat = DecimalFormat("##0.00")

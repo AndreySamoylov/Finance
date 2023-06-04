@@ -1,7 +1,9 @@
 package com.goodlucky.finance.receipts
 
+import android.content.DialogInterface
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -9,6 +11,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -238,6 +241,20 @@ class ReceiptActivity : AppCompatActivity(), DoubleTextAdapter.Listener {
             android.R.id.home -> finish()
             R.id.receiptToolbarMenuScanner -> barcodeLauncher.launch(ScanOptions())
             R.id.receiptToolbarMenuDatePicker -> rackMonthPicker.show()
+            R.id.receiptToolbarMenuDeleteReceipt -> {
+                val dialogClickListener = DialogInterface.OnClickListener { _, which ->
+                    when (which) {
+                        DialogInterface.BUTTON_POSITIVE -> deleteReceipt()
+                        DialogInterface.BUTTON_NEGATIVE -> {}
+                    }
+                }
+
+                val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+                builder.setMessage(R.string.doYouWantDeleteReceipt  )
+                    .setPositiveButton(R.string.yes, dialogClickListener)
+                    .setNegativeButton(R.string.no, dialogClickListener)
+                    .show()
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -330,5 +347,18 @@ class ReceiptActivity : AppCompatActivity(), DoubleTextAdapter.Listener {
             // Обновление списка чеков
             createReceiptAdapter()
         }
+    }
+
+    //  Метод удаляет выбранный в списке чек
+    private fun deleteReceipt(){
+        var selectedReceipt = MyReceipt()
+        try {
+            selectedReceipt = binding.receiptsSpinnerReceipt.selectedItem as MyReceipt
+        } catch (exception : java.lang.NullPointerException){
+            Toast.makeText(this@ReceiptActivity, R.string.error, Toast.LENGTH_SHORT).show()
+            Log.d("Receipt Activity", exception.toString())
+        }
+        myDbManager.deleteFromReceipts(selectedReceipt._id)
+        createReceiptAdapter()
     }
 }

@@ -5,6 +5,15 @@ object MyConstants {
     const val STATE_ADD = "add"
     const val STATE_CHANGE_OR_DELETE = "change_or_delete"
 
+    const val NAME_CATEGORY = "name_category"
+    const val ID_ACCOUNT = "id_account"
+    const val ID_CURRENCY = "id_currency"
+    const val COST = "cost"
+    const val INCOME = "income"
+    const val INITIAL_DATE = "initial_date"
+    const val FINAL_DATE = "final_date"
+    const val VALUE = "value"
+
     const val KEY_MY_ACCOUNT = "my_account"
     const val KEY_MY_CATEGORY = "my_category"
     const val KEY_MY_COST = "my_cost"

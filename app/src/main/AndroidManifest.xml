@@ -15,6 +15,9 @@
         android:theme="@style/Theme.Finance"
         tools:targetApi="31">
         <activity
+            android:name=".CategoryListActivity"
+            android:exported="false" />
+        <activity
             android:name=".analytic.AnalyticActivity"
             android:exported="false" />
         <activity

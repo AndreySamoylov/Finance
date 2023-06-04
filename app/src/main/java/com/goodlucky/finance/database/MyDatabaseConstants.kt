@@ -2,7 +2,7 @@ package com.goodlucky.finance.database
 
 object MyDatabaseConstants{
     const val DB_NAME = "finance.db"
-    const val DB_VERSION = 42
+    const val DB_VERSION = 43
 
     //Таблица чеки
     const val TABLE_RECEIPTS = "receipts"
@@ -122,11 +122,13 @@ object MyDatabaseConstants{
     const val TYPE_LIMIT = "type"
     const val SUM_LIMIT = "sum"
     const val ID_LIMIT_CATEGORY = "id_category"
+    const val ID_LIMIT_CURRENCY = "id_currency"
     const val TABLE_LIMITS_CREATE = "CREATE TABLE IF NOT EXISTS " + TABLE_LIMITS +
             " (" + ID_LIMIT + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             TYPE_LIMIT + " INTEGER NOT NULL," +
             SUM_LIMIT + " REAL NOT NULL," +
             ID_LIMIT_CATEGORY + " INTEGER NOT NULL," +
+            ID_LIMIT_CURRENCY + " INTEGER NOT NULL," +
             "FOREIGN KEY (" + ID_LIMIT_CATEGORY + ") REFERENCES " + TABLE_CATEGORIES + " (" + ID_CATEGORY + ") ON DELETE CASCADE" +
             ");"
     const val TABLE_LIMITS_DROP = "DROP TABLE IF EXISTS $TABLE_LIMITS;"

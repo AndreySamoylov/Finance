@@ -51,7 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:fontFamily="sans-serif-medium"
-            android:text="@string/inputComment" />
+            android:text="@string/comment" />
     </LinearLayout>
 
 </LinearLayout>

@@ -15,6 +15,8 @@
     <string name="date">Дата</string>
     <string name="other">Остальное</string>
     <string name="sum">Сумма</string>
+    <string name="currency">Валюта</string>
+    <string name="result">Итог</string>
     <string name="comment">Комментарий</string>
     <string name="account">Счёт</string>
     <string name="limit">Ограничение</string>
@@ -61,6 +63,7 @@
     <string name="chooseCurrency">Выберите валюту</string>
     <string name="chooseLimit">Выберите ограничение</string>
     <string name="changeDate">Изменить дату</string>
+    <string name="deleteReceipt">Удалить чек</string>
     <string name="scanned">Отсканировано</string>
     <string name="youDoNotEnterAccount">Вы не вошли в аккаунт</string>
     <string name="youEnterAs">Вы вошли как:</string>
@@ -72,15 +75,15 @@
     <string name="accountTextFewLenght">Добавьте больше символов в названии</string>
     <string name="costSumWrongSum">Введите другую сумму</string>
 
-    <string name="recordHaveAdded">Запись была добавлена</string>
-    <string name="categoryHaveAdded">Категория была добавлена</string>
-    <string name="accountHaveAdded">Счёт был добавлен</string>
-    <string name="recordHaveChanged">Запись была изменена</string>
-    <string name="categoryHaveChanged">Категория была изменена</string>
-    <string name="accountHaveChanged">Счёт был изменен</string>
-    <string name="recordHaveDeleted">Запись была удалена</string>
-    <string name="categoryHaveDeleted">Категория была удалена</string>
-    <string name="accountHaveDeleted">Счёт был удалён</string>
+    <string name="recordHaveAdded">Запись добавлена</string>
+    <string name="categoryHaveAdded">Категория добавлена</string>
+    <string name="accountHaveAdded">Счёт добавлен</string>
+    <string name="recordHaveChanged">Запись изменена</string>
+    <string name="categoryHaveChanged">Категория изменена</string>
+    <string name="accountHaveChanged">Счёт изменен</string>
+    <string name="recordHaveDeleted">Запись удалена</string>
+    <string name="categoryHaveDeleted">Категория удалена</string>
+    <string name="accountHaveDeleted">Счёт удалён</string>
     <string name="dataSuccesfulSave">Данные успешно сохранены</string>
     <string name="dataFailedSave">Ошибка сохранения данных</string>
     <string name="dataSuccesfulLoad">Данные успешно загруженны</string>
@@ -90,6 +93,8 @@
     <!-- Диалоговые окна -->
     <string name="doYouWantSaveDataToServer">Вы уверенны, что хотите сохранить данные?</string>
     <string name="doYouWantLoadDataFromServer">Вы уверенны, что хотите загрузить данные?</string>
+
+    <string name="doYouWantDeleteReceipt">Вы уверенны, что хотите удалить чек?</string>
 
     <!-- Заголовки для элементов меню-->
     <string name="enterAccount">Войти в аккаунт</string>
