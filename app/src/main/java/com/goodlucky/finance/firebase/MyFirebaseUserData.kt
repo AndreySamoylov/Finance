@@ -9,7 +9,7 @@ data class MyFirebaseUserData(var listCost : List<MyCost>,
                               var listBank : List<MyBank>,
                               var listCurrency: List<MyCurrency>,
                               var listReceipt: List<MyReceipt>,
-                              var listLimits: List<MyLimit>
+                              var listLimits: List<MyLimitFirebase>
 ){
     constructor() : this(listOf(), listOf(),listOf(),listOf(), listOf(), listOf(), listOf(), listOf())
 }

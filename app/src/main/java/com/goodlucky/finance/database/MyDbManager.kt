@@ -1283,6 +1283,23 @@ class MyDbManager(context: Context) {
         return tempList
     }
 
+    fun fromLimitsFirebaseType() : List<MyLimitFirebase>{
+        val tempList: MutableList<MyLimitFirebase> = ArrayList()
+        val cursor = sqLiteDatabase!!.query(
+            MyDatabaseConstants.TABLE_LIMITS,null,null,null,null,null,null)
+        while (cursor.moveToNext()) {
+            @SuppressLint("Range") val id = cursor.getLong(cursor.getColumnIndex(MyDatabaseConstants.ID_LIMIT))
+            @SuppressLint("Range") val type = cursor.getInt(cursor.getColumnIndex(MyDatabaseConstants.TYPE_LIMIT))
+            @SuppressLint("Range") val sum = cursor.getDouble(cursor.getColumnIndex(MyDatabaseConstants.SUM_LIMIT))
+            @SuppressLint("Range") val idCategory = cursor.getLong(cursor.getColumnIndex(MyDatabaseConstants.ID_LIMIT_CATEGORY))
+            @SuppressLint("Range") val idCurrency = cursor.getLong(cursor.getColumnIndex(MyDatabaseConstants.ID_LIMIT_CURRENCY))
+            val limit = MyLimitFirebase(id, type, sum, idCategory, idCurrency)
+            tempList.add(limit)
+        }
+        cursor.close()
+        return tempList
+    }
+
     fun findLimit(categoryID : Long, type : Byte) : MyLimit{
         val selection = "${MyDatabaseConstants.ID_LIMIT_CATEGORY} = ? AND ${MyDatabaseConstants.TYPE_LIMIT} = ?"
         val selectionArgs = arrayOf(categoryID.toString(), type.toString())

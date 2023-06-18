@@ -168,7 +168,7 @@ class MainActivity : AppCompatActivity() {
             val listBank: List<MyBank> = myDbManager.fromBanks()
             val listCurrency: List<MyCurrency> = myDbManager.fromCurrencies()
             val listReceipt: List<MyReceipt> = myDbManager.fromReceipts()
-            val listLimits : List<MyLimit> = myDbManager.fromLimits()
+            val listLimits : List<MyLimitFirebase> = myDbManager.fromLimitsFirebaseType()
             myDbManager.closeDatabase()
             val allData =
                 MyFirebaseUserData(listCost, listIncome, listCategory, listAccount, listBank, listCurrency, listReceipt, listLimits)
@@ -230,7 +230,10 @@ class MainActivity : AppCompatActivity() {
                 myDbManager.clearTableIncome()
                 for (income in listIncome!!) myDbManager.insertToIncomeWithID(income)
                 myDbManager.clearTableLimits()
-                for (limit in listLimit!!) myDbManager.insertToLimitsWithID(limit)
+                for (limit in listLimit!!){
+                    val myLimit = MyLimit(limit._id, limit._type.toByte(), limit._sum, limit._id_category, limit._id_currency)
+                    myDbManager.insertToLimitsWithID(myLimit)
+                }
 
                 myDbManager.closeDatabase()
 

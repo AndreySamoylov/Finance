@@ -75,7 +75,7 @@ data class Item(
     @SerializedName("name") val name : String,
     @SerializedName("ndsSum") val ndsSum : Double,
     @SerializedName("price") val price : Double,
-    @SerializedName("quantity") val quantity : Int,
+    @SerializedName("quantity") val quantity : Double,
     @SerializedName("sum") val sum : Double
 )
 
